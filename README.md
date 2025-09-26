@@ -21,4 +21,8 @@ front end:
 
 pnpm run dev
 
+download for gemini
+go get google.golang.org/genai
+
+
 
