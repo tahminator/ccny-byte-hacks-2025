@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"fmt"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/tahminator/go-react-template/api"
 	"github.com/tahminator/go-react-template/database"
+	"google.golang.org/genai"
 )
 
 const defaultPort = "8080"
@@ -41,9 +43,23 @@ func main() {
 	}
 	defer db.Close()
 
+	apiKey := os.Getenv("GEMINI_API_KEY")
+	if apiKey == "" {
+		log.Fatalf("GEMINI_API_KEY environment variable is required")
+	}
+
+	ctx := context.Background()
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  apiKey,
+		Backend: genai.BackendGeminiAPI,
+	})
+	if err != nil {
+		log.Fatalf("Failed to create Gemini client: %v", err)
+	}
+
 	r := gin.Default()
 
-	api.NewRouter(r, db)
+	api.NewRouter(r, db, client)
 
 	if os.Getenv("ENV") == "production" {
 		r.Static("/", "./static")
