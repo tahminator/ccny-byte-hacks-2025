@@ -10,6 +10,14 @@ corepack enable pnpm
 
 cd js && pnpm i
 
+make static file/index.html
+
 How to run:
+
+backend:
 go run main.go
+
+front end:
+
+pnpm run dev
 
