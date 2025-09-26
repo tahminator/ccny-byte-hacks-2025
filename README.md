@@ -15,9 +15,10 @@ make static file/index.html
 How to run:
 
 backend:
-go run main.go
+go run main.go or just go-dev
 
 front end:
 
 pnpm run dev
+
 
