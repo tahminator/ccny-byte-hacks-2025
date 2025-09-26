@@ -10,3 +10,6 @@ corepack enable pnpm
 
 cd js && pnpm i
 
+How to run:
+go run main.go
+
