@@ -1,6 +1,6 @@
 brew install go
 
-go mod tiny
+go mod tidy
 
 brew install golang-migrate
 
@@ -10,4 +10,3 @@ corepack enable pnpm
 
 cd js && pnpm i
 
-cd js && pnpm i
