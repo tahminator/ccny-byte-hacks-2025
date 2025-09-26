@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 /**
  * The queryClient is outside of the React function so that it never gets re-created again on another render.
