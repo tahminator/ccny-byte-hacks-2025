@@ -7,8 +7,10 @@ import (
 )
 
 type User struct {
-	Id        uuid.UUID `db:"id" json:"id"`
-	GoogleId  string    `db:"googleId" json:"googleId"`
-	IsAdmin   bool      `db:"isAdmin" json:"isAdmin"`
-	CreatedAt time.Time `db:"createdAt" json:"createdAt"`
+	Id             uuid.UUID `db:"id" json:"id"`
+	GoogleId       string    `db:"googleId" json:"googleId"`
+	IsAdmin        bool      `db:"isAdmin" json:"isAdmin"`
+	CreatedAt      time.Time `db:"createdAt" json:"createdAt"`
+	GithubUsername *string   `db:"githubUsername" json:"githubUsername"`
+	GithubToken    *string   `db:"githubToken" json:"githubToken"`
 }
