@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { commitRepository, declineMerge } from "../../fetchers/github";
+import {
+  acceptMerge,
+  commitRepository,
+  declineMerge,
+} from "../../fetchers/github";
 
 export const useCommitRepositoryMutation = () => {
   const queryClient = useQueryClient();
@@ -34,6 +38,25 @@ export const useDeclineMergeMutation = () => {
     }) => declineMerge(fullPath, repoName),
     onSettled: () => {
       queryClient.invalidateQueries({});
+    },
+  });
+};
+
+export const useAcceptMergeMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      newFileData,
+      fullPath,
+      repoName,
+    }: {
+      newFileData: string;
+      fullPath: string;
+      repoName: string;
+    }) => acceptMerge(newFileData, fullPath, repoName),
+    onSettled: () => {
+      queryClient.invalidateQueries();
     },
   });
 };

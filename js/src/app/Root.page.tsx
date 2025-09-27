@@ -9,19 +9,23 @@ import DiffEditor from "@/components/code/DiffEditor";
 import MergeConflictButton from "@/components/code/MergeConflictButton";
 import { Button } from "@/components/ui/button";
 import { useFileTreeQuery } from "@/lib/api/queries/auth";
-import { useCommitRepositoryMutation } from "@/lib/api/queries/github";
+import {
+  useAcceptMergeMutation,
+  useCommitRepositoryMutation,
+} from "@/lib/api/queries/github";
 import { useStream } from "@/lib/hooks/useStream";
 
 export default function RootPage() {
   const { data, status } = useFileTreeQuery("NewsTrusty");
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
-    undefined
+    undefined,
   );
   const [resolvedCode, setResolvedCode] = useState<string>("");
   const [currentEditorContent, setCurrentEditorContent] = useState<string>("");
 
   const commitMutation = useCommitRepositoryMutation();
+  const acceptMergeMutation = useAcceptMergeMutation();
   const { startStream } = useStream({
     onChunk: (chunk) => {
       setCodeString((prev) => prev + chunk);
@@ -52,13 +56,16 @@ export default function RootPage() {
 
   const handleAcceptResolvedCode = async (
     filePath: string,
-    resolvedCodeContent: string
+    resolvedCodeContent: string,
   ) => {
     console.log("Accepting resolved code for:", filePath);
     console.log("Resolved code:", resolvedCodeContent);
 
-    // TODO: Add API call to save the resolved code when endpoint is ready
-    // const result = await saveResolvedCode(filePath, resolvedCodeContent);
+    acceptMergeMutation.mutate({
+      newFileData: resolvedCodeContent,
+      fullPath: selectedFile?.fullPath ?? "",
+      repoName: "NewsTrusty",
+    });
 
     setResolvedCode(""); // Clear the modal
     setCodeString(""); // Clear the diff editor
@@ -72,8 +79,11 @@ export default function RootPage() {
     setCodeString(""); // Clear the diff editor
   };
 
-  const handleEditorChange = (value: string | undefined) => {
-    console.log("Editor content changed:", { value });
+  const handleEditorChange = (
+    value: string | undefined,
+    file: CodeFile | undefined,
+  ) => {
+    console.log("Editor content changed:", { value, file: file?.name });
     setCurrentEditorContent(value || "");
   };
 
@@ -114,10 +124,10 @@ export default function RootPage() {
                     },
                     onError: (error) => {
                       toast.error(
-                        error.message || "Failed to commit repository"
+                        error.message || "Failed to commit repository",
                       );
                     },
-                  }
+                  },
                 );
               }}
             >

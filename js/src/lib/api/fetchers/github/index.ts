@@ -1,7 +1,7 @@
 export async function commitRepository(
   repoName: string,
   newFileData: string,
-  path: string
+  path: string,
 ) {
   const res = await fetch("/api/github/commit", {
     method: "POST",
@@ -35,6 +35,30 @@ export async function declineMerge(fullPath: string, repoName: string) {
       .json()
       .catch(() => ({ error: "Failed to decline merge" }));
     throw new Error(errorData.error || "Failed to decline merge");
+  }
+
+  return await res.json();
+}
+
+export async function acceptMerge(
+  newFileData: string,
+  fullPath: string,
+  repoName: string,
+) {
+  const res = await fetch("/api/github/merge/accept", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      newFileData,
+      fullPath,
+      repoName,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to commit to repository");
   }
 
   return await res.json();
