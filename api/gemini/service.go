@@ -31,25 +31,83 @@ func (gs *GeminiService) ResolveMergeConflictsWithRAG(
 		return "", fmt.Errorf("failed to get conflict chunks: %w", err)
 	}
 
-	var _ []repo_chunks.SimilarChunk
+	var contextChunks []repo_chunks.SimilarChunk
 	if len(conflictChunks) > 0 {
 		for _, conflict := range conflictChunks {
-			_, err := gs.repoChunksRepo.GetContextChunks(ctx, repoHash, conflict.Source, conflict.LineStart, conflict.LineEnd, 10)
+			ctxChunks, err := gs.repoChunksRepo.GetContextChunks(ctx, repoHash, conflict.Source, conflict.LineStart, conflict.LineEnd, 10)
 			if err != nil {
 				continue
 			}
+			contextChunks = append(contextChunks, ctxChunks...)
 		}
 	}
 
-	_, err = gs.repoChunksRepo.GetSimilarFunctions(ctx, userQuery, repoHash, 5)
+	similarFunctions, err := gs.repoChunksRepo.GetSimilarFunctions(ctx, userQuery, repoHash, 5)
 	if err != nil {
+		similarFunctions = []repo_chunks.SimilarChunk{}
 	}
 
 	prompt := Prompt + "\n\nUser Request: " + userQuery + "\n\n"
 
+	if len(conflictChunks) > 0 {
+		prompt += "MERGE CONFLICTS DETECTED:\n"
+		for i, chunk := range conflictChunks {
+			prompt += fmt.Sprintf("Conflict %d in %s (lines %d-%d):\n", i+1, chunk.Source, chunk.LineStart, chunk.LineEnd)
+			prompt += fmt.Sprintf("Section: %s\n", chunk.ConflictSection)
+			prompt += fmt.Sprintf("Content:\n%s\n\n", chunk.Chunk)
+		}
+	}
+
+	if len(contextChunks) > 0 {
+		prompt += "RELEVANT CONTEXT:\n"
+		for i, chunk := range contextChunks {
+			prompt += fmt.Sprintf("Context %d from %s:\n%s\n\n", i+1, chunk.Source, chunk.Chunk)
+		}
+	}
+
+	if len(similarFunctions) > 0 {
+		prompt += "SIMILAR FUNCTIONS FOR REFERENCE:\n"
+		for i, chunk := range similarFunctions {
+			prompt += fmt.Sprintf("Function %d from %s:\n%s\n\n", i+1, chunk.Source, chunk.Chunk)
+		}
+	}
+
 	response, err := gs.generateResponse(ctx, prompt)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate response: %w", err)
+	}
+
+	return response, nil
+}
+
+func (gs *GeminiService) ResolveConflictsToFile(
+	ctx context.Context,
+	conflictContent string,
+	filePath string,
+	userQuery string,
+	repoHash string,
+) (string, error) {
+	similarChunks, err := gs.repoChunksRepo.GetSimilarChunks(ctx, userQuery, repoHash, 5)
+	if err != nil {
+		similarChunks = []repo_chunks.SimilarChunk{}
+	}
+
+	prompt := Prompt + "\n\nUser Request: " + userQuery + "\n\n"
+	prompt += fmt.Sprintf("File: %s\n", filePath)
+	prompt += "CONFLICTED FILE CONTENT:\n"
+	prompt += conflictContent + "\n\n"
+
+	if len(similarChunks) > 0 {
+		prompt += "REPOSITORY CONTEXT:\n"
+		for i, chunk := range similarChunks {
+			prompt += fmt.Sprintf("Context %d from %s (similarity: %.3f):\n", i+1, chunk.Source, chunk.Distance)
+			prompt += fmt.Sprintf("Content:\n%s\n\n", chunk.Chunk)
+		}
+	}
+
+	response, err := gs.generateResponse(ctx, prompt)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate resolved file: %w", err)
 	}
 
 	return response, nil
@@ -61,12 +119,23 @@ func (gs *GeminiService) ResolveConflictsWithSemanticSearch(
 	repoHash string,
 	k int,
 ) (string, error) {
-	_, err := gs.repoChunksRepo.GetSimilarChunks(ctx, userQuery, repoHash, k)
+	similarChunks, err := gs.repoChunksRepo.GetSimilarChunks(ctx, userQuery, repoHash, k)
 	if err != nil {
 		return "", fmt.Errorf("failed to get similar chunks: %w", err)
 	}
 
 	prompt := Prompt + "\n\nUser Request: " + userQuery + "\n\n"
+
+	if len(similarChunks) > 0 {
+		prompt += "REPOSITORY CONTEXT (from semantic search):\n"
+		for i, chunk := range similarChunks {
+			prompt += fmt.Sprintf("Context %d from %s (similarity: %.3f):\n", i+1, chunk.Source, chunk.Distance)
+			if chunk.FileType == "conflict" {
+				prompt += fmt.Sprintf("Conflict section: %s\n", chunk.ConflictSection)
+			}
+			prompt += fmt.Sprintf("Content:\n%s\n\n", chunk.Chunk)
+		}
+	}
 
 	response, err := gs.generateResponse(ctx, prompt)
 	if err != nil {
@@ -83,12 +152,23 @@ func (gs *GeminiService) ResolveConflictsWithThreshold(
 	k int,
 	maxDistance float64,
 ) (string, error) {
-	_, err := gs.repoChunksRepo.GetSimilarChunksWithThreshold(ctx, userQuery, repoHash, k, maxDistance)
+	similarChunks, err := gs.repoChunksRepo.GetSimilarChunksWithThreshold(ctx, userQuery, repoHash, k, maxDistance)
 	if err != nil {
 		return "", fmt.Errorf("failed to get similar chunks with threshold: %w", err)
 	}
 
 	prompt := Prompt + "\n\nUser Request: " + userQuery + "\n\n"
+
+	if len(similarChunks) > 0 {
+		prompt += "REPOSITORY CONTEXT (filtered by similarity threshold):\n"
+		for i, chunk := range similarChunks {
+			prompt += fmt.Sprintf("Context %d from %s (similarity: %.3f):\n", i+1, chunk.Source, chunk.Distance)
+			if chunk.FileType == "conflict" {
+				prompt += fmt.Sprintf("Conflict section: %s\n", chunk.ConflictSection)
+			}
+			prompt += fmt.Sprintf("Content:\n%s\n\n", chunk.Chunk)
+		}
+	}
 
 	response, err := gs.generateResponse(ctx, prompt)
 	if err != nil {

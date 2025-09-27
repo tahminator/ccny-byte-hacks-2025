@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/tahminator/go-react-template/api/gemini"
@@ -33,7 +34,6 @@ func main() {
 
 	ctx := context.Background()
 
-	// Read conflict text from testRepo/main.go
 	testRepoPath := filepath.Join("..", "testRepo", "main.go")
 	conflictText, err := ioutil.ReadFile(testRepoPath)
 	if err != nil {
@@ -73,23 +73,42 @@ func main() {
 	repoChunksRepo := repo_chunks.NewPostgresRepoChunksRepository(pool)
 	geminiService := gemini.NewGeminiService(geminiClient, repoChunksRepo)
 
-	fmt.Println("2. Testing RAG-enhanced conflict resolution...")
-	response, err := geminiService.ResolveMergeConflictsWithRAG(ctx, "resolve all merge conflicts in this Go code", repoHash)
+	fmt.Println("2. Resolving merge conflicts to generate new file...")
+	resolvedContent, err := geminiService.ResolveConflictsToFile(ctx, string(conflictText), "testRepo/main.go", "resolve all merge conflicts in this Go code", repoHash)
 	if err != nil {
 		log.Fatalf("Failed to resolve conflicts: %v", err)
 	}
 
-	fmt.Println("Generated shell commands:")
-	fmt.Println(response)
+	fmt.Println("Generated resolved file content:")
+	fmt.Println("=" + strings.Repeat("=", 50))
+	fmt.Println(resolvedContent)
+	fmt.Println("=" + strings.Repeat("=", 50))
 	fmt.Println()
 
-	fmt.Println("3. Testing semantic search...")
-	semanticResponse, err := geminiService.ResolveConflictsWithSemanticSearch(ctx, "fix user validation conflicts", repoHash, 5)
-	if err != nil {
-		log.Printf("Semantic search failed: %v", err)
+	resolvedFilePath := "../testRepo/main_resolved.go"
+	if err := ioutil.WriteFile(resolvedFilePath, []byte(resolvedContent), 0644); err != nil {
+		log.Printf("Warning: Failed to write resolved file: %v", err)
 	} else {
-		fmt.Println("Semantic search result:")
-		fmt.Println(semanticResponse)
+		fmt.Printf("Resolved file written to: %s\n", resolvedFilePath)
+	}
+	fmt.Println()
+
+	fmt.Println("3. Testing semantic search resolution...")
+	semanticResolved, err := geminiService.ResolveConflictsToFile(ctx, string(conflictText), "testRepo/main.go", "fix user validation conflicts", repoHash)
+	if err != nil {
+		log.Printf("Semantic search resolution failed: %v", err)
+	} else {
+		fmt.Println("Semantic search resolved content:")
+		fmt.Println("=" + strings.Repeat("=", 50))
+		fmt.Println(semanticResolved)
+		fmt.Println("=" + strings.Repeat("=", 50))
+
+		semanticFilePath := "../testRepo/main_semantic_resolved.go"
+		if err := ioutil.WriteFile(semanticFilePath, []byte(semanticResolved), 0644); err != nil {
+			log.Printf("Warning: Failed to write semantic resolved file: %v", err)
+		} else {
+			fmt.Printf("Semantic resolved file written to: %s\n", semanticFilePath)
+		}
 	}
 
 	fmt.Println("=== Test Complete ===")
