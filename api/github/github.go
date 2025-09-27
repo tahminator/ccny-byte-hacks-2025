@@ -10,20 +10,16 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	_ "strings"
 	"time"
 
-	"github.com/google/go-github/v75/github"
-	_ "github.com/google/uuid"
-	"github.com/tahminator/go-react-template/utils"
-
 	"github.com/gin-gonic/gin"
-	"github.com/tahminator/go-react-template/database/repository/session"
-	"github.com/tahminator/go-react-template/database/repository/user"
-
 	gogit "github.com/go-git/go-git/v5"
 	githttp "github.com/go-git/go-git/v5/plumbing/transport/http"
 	gh "github.com/google/go-github/v75/github"
+
+	"github.com/tahminator/go-react-template/database/repository/session"
+	"github.com/tahminator/go-react-template/database/repository/user"
+	"github.com/tahminator/go-react-template/utils"
 )
 
 func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, sessionRepository session.SessionRepository) *gin.RouterGroup {
@@ -39,11 +35,12 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		c.Set("ao", ao)
 		c.Next()
 	})
+
+	// --- POST /github/connect
 	r.POST("/connect", func(c *gin.Context) {
 		type req struct {
 			Token string `json:"token"`
 		}
-
 		var body req
 		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.Token) == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "token is required"})
@@ -68,9 +65,9 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid auth object in context"})
 			return
 		}
-		appUser := aoPtr.User // your validated, loaded app user
+		appUser := aoPtr.User
 
-		// 2) Validate the token with GitHub and read the login
+		// Validate the token and read the login
 		cli := gh.NewClient(nil).WithAuthToken(body.Token)
 		ghUser, resp, err := cli.Users.Get(c.Request.Context(), "")
 		if err != nil || ghUser == nil || ghUser.Login == nil || *ghUser.Login == "" {
@@ -79,7 +76,7 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		}
 		login := *ghUser.Login
 
-		// 3) Persist creds (fields are *string on your user model)
+		// Persist creds
 		token := body.Token
 		appUser.GithubToken = &token
 		appUser.GithubUsername = &login
@@ -93,8 +90,7 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		if len(masked) > 8 {
 			masked = masked[:4] + "****" + masked[len(masked)-4:]
 		}
-
-		_ = resp // kept to avoid “unused”
+		_ = resp
 
 		c.JSON(http.StatusOK, gin.H{
 			"message":         "github connected",
@@ -103,18 +99,19 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		})
 	})
 
+	// --- GET /github/repos
 	r.GET("/repos", func(c *gin.Context) {
 		aoVal, ok := c.Get("ao")
 		if !ok || aoVal == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth object in context"})
 			return
 		}
-		ao, ok := aoVal.(*utils.AuthenticationObject) // adjust to your actual type if different
+		ao, ok := aoVal.(*utils.AuthenticationObject)
 		if !ok || ao == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid auth object in context"})
 			return
 		}
-		userID := ao.User.Id // uuid.UUID
+		userID := ao.User.Id
 
 		u, err := userRepository.GetUserById(c.Request.Context(), userID)
 		if err != nil {
@@ -126,10 +123,10 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			return
 		}
 
-		client := github.NewClient(nil).WithAuthToken(*u.GithubToken)
-		opt := &github.RepositoryListByAuthenticatedUserOptions{
+		client := gh.NewClient(nil).WithAuthToken(*u.GithubToken)
+		opt := &gh.RepositoryListByAuthenticatedUserOptions{
 			Type:        "all",
-			ListOptions: github.ListOptions{PerPage: 100},
+			ListOptions: gh.ListOptions{PerPage: 100},
 		}
 
 		var repoNames []string
@@ -140,9 +137,9 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 				c.JSON(http.StatusBadGateway, gin.H{"error": "failed to fetch repos from GitHub"})
 				return
 			}
-			for _, r := range repos {
-				if r.Name != nil {
-					repoNames = append(repoNames, *r.Name)
+			for _, rpo := range repos {
+				if rpo.Name != nil {
+					repoNames = append(repoNames, *rpo.Name)
 				}
 			}
 			if resp == nil || resp.NextPage == 0 {
@@ -154,8 +151,8 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		c.JSON(http.StatusOK, repoNames)
 	})
 
+	// --- POST /github/clone
 	r.POST("/clone", func(c *gin.Context) {
-		// pull auth object from context
 		aoVal, ok := c.Get("ao")
 		if !ok || aoVal == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth object in context"})
@@ -166,7 +163,7 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid auth object in context"})
 			return
 		}
-		userID := ao.User.Id // uuid.UUID
+		userID := ao.User.Id
 
 		var body struct {
 			Owner string `json:"owner"`
@@ -261,6 +258,7 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		})
 	})
 
+	// --- POST /github/commit
 	r.POST("/commit", func(c *gin.Context) {
 		type Req struct {
 			RepoName    string `json:"repoName"`
@@ -269,45 +267,42 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		}
 
 		var body Req
-		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.RepoName) == "" || strings.TrimSpace(body.newFileData) == "" {
+		if err := c.ShouldBindJSON(&body); err != nil ||
+			strings.TrimSpace(body.RepoName) == "" || strings.TrimSpace(body.NewFileData) == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "repo name and/or new file data should not be empty"})
 			return
 		}
-		ao := c.MustGet("ao").(*utils.AuthenticationObject)
 
+		ao := c.MustGet("ao").(*utils.AuthenticationObject)
 		githubUsername := ao.User.GithubUsername
 		githubToken := ao.User.GithubToken
 		userId := ao.User.Id.String()
 
 		base := filepath.Join("repos", userId, *githubUsername, body.RepoName)
 		path := body.Path
-
 		if len(path) > 0 && path[0] == '/' {
 			path = path[1:]
 		}
-
 		fullPath := filepath.Join(base, path)
-		permissions := os.FileMode(0o644)
 
-		err := os.WriteFile(fullPath, []byte(body.NewFileData), permissions)
-		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
+		if err := os.MkdirAll(filepath.Dir(fullPath), 0o755); err != nil {
+			c.JSON(http.StatusInternalServerError, utils.Failure("failed to create parent directories"))
+			return
+		}
+		if err := os.WriteFile(fullPath, []byte(body.NewFileData), 0o644); err != nil {
+			c.JSON(http.StatusInternalServerError, utils.Failure("failed to write file"))
 			return
 		}
 
-		status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && [ -f \"$(git rev-parse --git-dir)/MERGE_HEAD\" ] && echo true || echo false", base))
+		status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf(
+			"cd %s && [ -f \"$(git rev-parse --git-dir)/MERGE_HEAD\" ] && echo true || echo false", base))
 		if err != nil || stderr != "" || status != 0 {
-			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
 			c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+			return
 		}
 
-		boolString := strings.ReplaceAll(stdout, "\n", "")
-
-		inMergeMode, err := strconv.ParseBool(boolString)
+		inMergeMode, err := strconv.ParseBool(strings.TrimSpace(stdout))
 		if err != nil {
-			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
 			c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
 			return
 		}
@@ -315,56 +310,45 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		if inMergeMode {
 			status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && git diff --name-only --diff-filter=U", base))
 			if err != nil || stderr != "" || status != 0 {
-				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-				fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
 				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
 				return
 			}
-
-			lines := strings.Split(stdout, "\n")
-
+			lines := strings.Split(strings.TrimSpace(stdout), "\n")
 			if len(lines) > 0 && lines[0] != "" {
-				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-				fmt.Println(fmt.Sprintf("len lines %d", len(lines)))
 				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
 				return
 			}
 			url := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", *githubUsername, *githubToken, *githubUsername, body.RepoName)
-			fmt.Printf("heyyyy %s", url)
-			status, stdout, stderr, err = utils.RunCommand(fmt.Sprintf("cd %s && (git commit -m 'Test fix' || true) && git push %s", base, url))
-			fmt.Printf("heyyyy %s", stdout)
-			if status != 0 {
-				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-				fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+			status, _, _, err = utils.RunCommand(fmt.Sprintf("cd %s && (git commit -m 'Test fix' || true) && git push %s", base, url))
+			if status != 0 || err != nil {
 				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
 				return
 			}
-			c.JSON(http.StatusOK, utils.Success("ok", gin.H{}))
-			return
-		} else {
-			status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && git fetch && git merge", base))
-			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
-			if status != 0 {
-				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-				fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
-				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
-				return
-			}
-			url := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", *githubUsername, *githubToken, *githubUsername, body.RepoName)
-			status, stdout, stderr, err = utils.RunCommand(fmt.Sprintf("cd %s && git add . && (git commit -m 'Test msg' || true) && git push %s", base, url))
-			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
-			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
 			c.JSON(http.StatusOK, utils.Success("ok", gin.H{}))
 			return
 		}
+
+		// Normal path
+		status, _, _, err = utils.RunCommand(fmt.Sprintf("cd %s && git fetch && git merge", base))
+		if status != 0 || err != nil {
+			c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+			return
+		}
+		url := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", *githubUsername, *githubToken, *githubUsername, body.RepoName)
+		status, _, _, err = utils.RunCommand(fmt.Sprintf("cd %s && git add . && (git commit -m 'Test msg' || true) && git push %s", base, url))
+		if status != 0 || err != nil {
+			c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+			return
+		}
+		c.JSON(http.StatusOK, utils.Success("ok", gin.H{}))
 	})
 
+	// --- POST /github/merge/accept
 	r.POST("/merge/accept", func(c *gin.Context) {
 		type req struct {
-			NewFileData string `json:"newFileData"` // can be empty if you want to blank the file
-			FullPath    string `json:"fullPath"`    // e.g., "src/App.tsx" (relative to repo root)
-			RepoName    string `json:"repoName"`    // e.g., "StockProfitSim"
+			NewFileData string `json:"newFileData"`
+			FullPath    string `json:"fullPath"`
+			RepoName    string `json:"repoName"`
 		}
 
 		var body req
@@ -387,13 +371,11 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			c.JSON(http.StatusBadRequest, gin.H{"error": "fullPath is required"})
 			return
 		}
-		// fullPath must be a safe relative path
 		if strings.HasPrefix(body.FullPath, "/") || strings.Contains(body.FullPath, "..") {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "fullPath must be a safe relative path"})
 			return
 		}
 
-		// auth object
 		aoVal, ok := c.Get("ao")
 		if !ok || aoVal == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth object in context"})
@@ -405,7 +387,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			return
 		}
 
-		// load user + github username
 		u, err := userRepository.GetUserById(c.Request.Context(), ao.User.Id)
 		if err != nil || u == nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
@@ -417,7 +398,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		}
 		owner := strings.TrimSpace(*u.GithubUsername)
 
-		// build paths: repos/{userId}/{owner}/{repoName}/{fullPath}
 		base := filepath.Join("repos", ao.User.Id.String(), owner)
 		repoAbs := filepath.Join(base, body.RepoName)
 		if st, err := os.Stat(repoAbs); err != nil || !st.IsDir() {
@@ -428,7 +408,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		relClean := filepath.Clean(body.FullPath)
 		fileAbs := filepath.Join(repoAbs, relClean)
 
-		// containment check
 		repoAbsClean := filepath.Clean(repoAbs)
 		fileAbsClean := filepath.Clean(fileAbs)
 		sep := string(os.PathSeparator)
@@ -437,7 +416,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			return
 		}
 
-		// ensure parent dirs and write file
 		if err := os.MkdirAll(filepath.Dir(fileAbsClean), 0o755); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create parent directories"})
 			return
@@ -447,7 +425,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			return
 		}
 
-		// stage the change: git -C <repoAbs> add -- <fullPath>
 		posixRel := filepath.ToSlash(relClean)
 		if code, _, errOut, err := utils.RunCommand(fmt.Sprintf(`git -C %q add -- %q`, repoAbsClean, posixRel)); err != nil || code != 0 {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "git add failed", "details": errOut})
@@ -462,6 +439,7 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		})
 	})
 
+	// --- POST /github/merge/decline
 	r.POST("/merge/decline", func(c *gin.Context) {
 		type req struct {
 			FullPath string `json:"fullPath"`
@@ -483,7 +461,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			return
 		}
 
-		// auth object
 		aoVal, ok := c.Get("ao")
 		if !ok || aoVal == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth object in context"})
@@ -495,7 +472,6 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			return
 		}
 
-		// load user + github username
 		u, err := userRepository.GetUserById(c.Request.Context(), ao.User.Id)
 		if err != nil || u == nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
@@ -507,14 +483,12 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		}
 		owner := strings.TrimSpace(*u.GithubUsername)
 
-		// build repo path
 		base := filepath.Join("repos", ao.User.Id.String(), owner, body.RepoName)
 		if st, err := os.Stat(base); err != nil || !st.IsDir() {
 			c.JSON(http.StatusNotFound, gin.H{"error": "repo not found on disk"})
 			return
 		}
 
-		// run abort + reset
 		cmd := fmt.Sprintf("cd %s && git merge --abort && git reset --hard HEAD~1", base)
 		status, stdout, stderr, err := utils.RunCommand(cmd)
 		if err != nil || status != 0 {
