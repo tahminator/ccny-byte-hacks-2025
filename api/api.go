@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/tahminator/go-react-template/api/auth"
+	"github.com/tahminator/go-react-template/api/file"
 	"github.com/tahminator/go-react-template/api/gemini"
 	"github.com/tahminator/go-react-template/api/github"
 	"github.com/tahminator/go-react-template/database/repository/repo_chunks"
@@ -22,6 +23,7 @@ func NewRouter(eng *gin.Engine, db *pgxpool.Pool, geminiClient *genai.Client) *g
 	auth.NewRouter(r, userRepository, sessionRepository)
 	gemini.NewRouter(r, geminiClient, repoChunksRepository)
 	github.NewRouter(r, userRepository, sessionRepository)
+	file.NewRouter(r, userRepository, sessionRepository)
 
 	return r
 }
