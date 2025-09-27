@@ -101,15 +101,19 @@ func (repo *PostgresUserRepository) UpdateUser(ctx context.Context, user *User) 
 			"User"
 		SET
 			"googleId" = @googleId,
-			"isAdmin" = @isAdmin
+			"isAdmin" = @isAdmin,
+			"githubToken" = @githubToken,
+			"githubUsername" = @githubUsername
 		WHERE
 			id = @id
 	`
 
 	ct, err := repo.db.Exec(ctx, query, pgx.NamedArgs{
-		"id":       user.Id,
-		"googleId": user.GoogleId,
-		"isAdmin":  user.IsAdmin,
+		"id":             user.Id,
+		"googleId":       user.GoogleId,
+		"isAdmin":        user.IsAdmin,
+		"githubToken":    user.GithubToken,
+		"githubUsername": user.GithubUsername,
 	})
 	if err != nil {
 		return user, fmt.Errorf("failed to update user: %w", err)

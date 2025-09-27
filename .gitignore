@@ -31,4 +31,7 @@ node_modules
 # static files
 static/**
 
+#user repo files
+repos
+
 server
