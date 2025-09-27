@@ -33,8 +33,11 @@ export default function RootPage() {
 
     setCodeString("");
 
-    const message = context || "Please help resolve this merge conflict";
-    await startStream({ message });
+    await startStream({
+      conflictContent: "", // TODO: Get actual file content
+      filePath: selectedFile?.fullPath || "",
+      userQuery: context || "Please help resolve this merge conflict",
+    });
   };
 
   const handleFileSelected = (file: CodeFile) => {
