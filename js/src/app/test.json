@@ -1,6 +1,21 @@
 [
   {
     "type": "DIRECTORY",
+    "name": "testRepo",
+    "fullPath": "testRepo",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "main.go",
+        "fullPath": "testRepo/main.go",
+        "extension": "GO",
+        "isConflicted": true,
+        "code": "package testrepo\n\nimport (\n\t\"fmt\"\n\t\"log\"\n\t\"strings\"\n)\n\n<<<<<<< HEAD\nconst AppName = \"TestRepoApp-HEAD\"\n=======\nconst AppName = \"TestRepoApp-feature\"\n>>>>>>> feature/appname-constant\n\ntype User struct {\n\tID       int    `json:\\\"id\\\"`\n\tName     string `json:\\\"name\\\"`\n\tEmail    string `json:\\\"email\\\"`\n\tPassword string `json:\\\"-\\\"`\n}\n\n<<<<<<< HEAD\nfunc (u *User) Validate() error {\n\tif u.Name == \"\" {\n\t\treturn fmt.Errorf(\"name is required\")\n\t}\n\tif u.Email == \"\" {\n\t\treturn fmt.Errorf(\"email is required\")\n\t}\n\treturn nil\n}\n=======\nfunc (u *User) Validate() error {\n\tif len(u.Name) < 2 {\n\t\treturn fmt.Errorf(\"name must be at least 2 characters\")\n\t}\n\tif u.Email == \"\" || !strings.Contains(u.Email, \"@\") {\n\t\treturn fmt.Errorf(\"email must be valid\")\n\t}\n\treturn nil\n}\n>>>>>>> feature/user-validation\n\n<<<<<<< HEAD\nfunc main() {\n\tuser := &User{\n\t\tID:    1,\n\t\tName:  \"John Doe\",\n\t\tEmail: \"john@example.com\",\n\t}\n\n\tif err := user.Validate(); err != nil {\n\t\tlog.Fatal(err)\n\t}\n\n\tfmt.Println(\"User created successfully\")\n}\n=======\nfunc main() {\n\tuser := &User{\n\t\tID:    1,\n\t\tName:  \"John Doe\",\n\t\tEmail: \"john@example.com\",\n\t}\n\n\tif err := user.Validate(); err != nil {\n\t\tlog.Printf(\"Validation error: %v\", err)\n\t\treturn\n\t}\n\n\tfmt.Printf(\"[%s] User %s created successfully\\n\", AppName, user.Name)\n}\n>>>>>>> feature/improved-logging\n\n<<<<<<< HEAD\nfunc GetUserByID(id int) (*User, error) {\n\t// TODO: implement database lookup\n\treturn nil, fmt.Errorf(\"not implemented\")\n}\n=======\nfunc GetUserByID(id int) (*User, error) {\n\tif id <= 0 {\n\t\treturn nil, fmt.Errorf(\"invalid user ID\")\n\t}\n\t// TODO: implement database lookup\n\treturn nil, fmt.Errorf(\"not implemented\")\n}\n>>>>>>> feature/input-validation\n"
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
     "name": "cleanup",
     "fullPath": "cleanup",
     "subDirectories": [
@@ -9,7 +24,8 @@
         "name": "clean_nasdaq.py",
         "fullPath": "cleanup/clean_nasdaq.py",
         "extension": "PY",
-        "isConflicted": true
+        "isConflicted": true,
+        "code": "import pandas as pd\nimport numpy as np\n\n# Clean NASDAQ data\ndef clean_nasdaq_data(df):\n    \"\"\"Clean and process NASDAQ stock data\"\"\"\n    # Remove duplicates\n    df = df.drop_duplicates()\n    \n    # Handle missing values\n    df = df.fillna(method='ffill')\n    \n    # Convert date column to datetime\n    df['date'] = pd.to_datetime(df['date'])\n    \n    return df\n\nif __name__ == \"__main__\":\n    # Load data\n    data = pd.read_csv('nasdaq_data.csv')\n    \n    # Clean data\n    cleaned_data = clean_nasdaq_data(data)\n    \n    # Save cleaned data\n    cleaned_data.to_csv('cleaned_nasdaq_data.csv', index=False)\n    print(\"Data cleaning completed!\")"
       }
     ]
   },
@@ -23,7 +39,8 @@
         "name": "read_csv.py",
         "fullPath": "data/read_csv.py",
         "extension": "PY",
-        "isConflicted": false
+        "isConflicted": false,
+        "code": "import pandas as pd\nimport os\n\nclass CSVReader:\n    \"\"\"A utility class for reading CSV files\"\"\"\n    \n    def __init__(self, file_path):\n        self.file_path = file_path\n        self.data = None\n    \n    def read(self):\n        \"\"\"Read CSV file and return DataFrame\"\"\"\n        try:\n            if not os.path.exists(self.file_path):\n                raise FileNotFoundError(f\"File not found: {self.file_path}\")\n            \n            self.data = pd.read_csv(self.file_path)\n            print(f\"Successfully loaded {len(self.data)} rows from {self.file_path}\")\n            return self.data\n            \n        except Exception as e:\n            print(f\"Error reading file: {e}\")\n            return None\n    \n    def get_info(self):\n        \"\"\"Get basic information about the loaded data\"\"\"\n        if self.data is not None:\n            return {\n                'shape': self.data.shape,\n                'columns': list(self.data.columns),\n                'dtypes': self.data.dtypes.to_dict()\n            }\n        return None\n\n# Example usage\nif __name__ == \"__main__\":\n    reader = CSVReader('sample_data.csv')\n    data = reader.read()\n    \n    if data is not None:\n        info = reader.get_info()\n        print(f\"Data info: {info}\")"
       }
     ]
   },
@@ -37,7 +54,8 @@
         "name": "styles.css",
         "fullPath": "static/styles.css",
         "extension": "CSS",
-        "isConflicted": false
+        "isConflicted": false,
+        "code": "/* Main application styles */\n\n:root {\n  --primary-color: #3b82f6;\n  --secondary-color: #64748b;\n  --success-color: #10b981;\n  --warning-color: #f59e0b;\n  --error-color: #ef4444;\n  --background-color: #ffffff;\n  --text-color: #1f2937;\n}\n\nbody {\n  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;\n  background-color: var(--background-color);\n  color: var(--text-color);\n  line-height: 1.6;\n  margin: 0;\n  padding: 0;\n}\n\n.container {\n  max-width: 1200px;\n  margin: 0 auto;\n  padding: 0 1rem;\n}\n\n.btn {\n  display: inline-block;\n  padding: 0.5rem 1rem;\n  background-color: var(--primary-color);\n  color: white;\n  text-decoration: none;\n  border-radius: 0.375rem;\n  border: none;\n  cursor: pointer;\n  transition: background-color 0.2s;\n}\n\n.btn:hover {\n  background-color: #2563eb;\n}\n\n.card {\n  background: white;\n  border-radius: 0.5rem;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  padding: 1.5rem;\n  margin-bottom: 1rem;\n}\n\n@media (max-width: 768px) {\n  .container {\n    padding: 0 0.5rem;\n  }\n  \n  .card {\n    padding: 1rem;\n  }\n}"
       }
     ]
   },
@@ -56,14 +74,16 @@
             "name": "AAPL_10year.csv",
             "fullPath": "stock_data/AAPL/AAPL_10year.csv",
             "extension": "CSV",
-            "isConflicted": false
+            "isConflicted": false,
+            "code": "Date,Open,High,Low,Close,Adj Close,Volume\n2014-01-02,19.451429,19.540001,19.200001,19.200001,16.413504,21118100\n2014-01-03,19.285715,19.285715,18.857143,18.857143,16.120001,19787200\n2014-01-06,18.857143,18.857143,18.285715,18.285715,15.636001,17544600\n2014-01-07,18.285715,18.285715,17.714285,17.714285,15.136001,16281400\n2014-01-08,17.714285,17.714285,17.142857,17.142857,14.636001,15018200\n2014-01-09,17.142857,17.142857,16.571429,16.571429,14.136001,13755000\n2014-01-10,16.571429,16.571429,16.000000,16.000000,13.636001,12491800\n2014-01-13,16.000000,16.000000,15.428571,15.428571,13.136001,11228600\n2014-01-14,15.428571,15.428571,14.857143,14.857143,12.636001,9965400\n2014-01-15,14.857143,14.857143,14.285715,14.285715,12.136001,8704200"
           },
           {
             "type": "FILE",
             "name": "AAPL_3year.csv",
             "fullPath": "stock_data/AAPL/AAPL_3year.csv",
             "extension": "CSV",
-            "isConflicted": false
+            "isConflicted": false,
+            "code": "Date,Open,High,Low,Close,Adj Close,Volume\n2022-01-03,182.009995,182.940002,179.119995,182.009995,181.009995,103916400\n2022-01-04,182.630005,182.940002,179.119995,179.700012,178.700012,99310400\n2022-01-05,179.610001,180.169998,174.639999,174.919998,173.919998,94537600\n2022-01-06,174.089996,175.750000,171.029999,172.169998,171.169998,96904000\n2022-01-07,172.360001,173.630005,170.130005,172.190002,171.190002,86709100\n2022-01-10,171.259995,171.259995,168.710007,169.800003,168.800003,106765600\n2022-01-11,169.339996,170.990005,166.190002,166.229996,165.229996,132079600\n2022-01-12,166.979996,167.500000,164.559998,167.300003,166.300003,112117500\n2022-01-13,166.250000,166.250000,162.300003,164.509995,163.509995,134520300\n2022-01-14,163.500000,164.389999,160.750000,162.410004,161.410004,118809100"
           }
         ]
       },
