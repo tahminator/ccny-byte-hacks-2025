@@ -43,6 +43,13 @@
 
 :root {
   --radius: 0.625rem;
+  
+  /* VS Code Theme Variables */
+  --background-light: #ffffff;
+  --foreground-light: #000000;
+  --background-dark: #1e1e1e; /* VS Code editor background */
+  --foreground-dark: #d4d4d4; /* VS Code editor foreground */
+  
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -108,6 +115,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+.light {
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
+}
+
+.dark {
+  --background: var(--background-dark);
+  --foreground: var(--foreground-dark);
 }
 
 @layer base {
