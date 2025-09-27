@@ -12,8 +12,6 @@ import { useFileTreeQuery } from "@/lib/api/queries/auth";
 import { useCommitRepositoryMutation } from "@/lib/api/queries/github";
 import { useStream } from "@/lib/hooks/useStream";
 
-// const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
-
 export default function RootPage() {
   const { data, status } = useFileTreeQuery("NewsTrusty");
   const [codeString, setCodeString] = useState<string>("");
@@ -36,7 +34,7 @@ export default function RootPage() {
     },
     onComplete: (fullText) => {
       setCodeString(fullText);
-      setResolvedCode(fullText); // Set resolved code for the modal
+      setResolvedCode(fullText);
     },
   });
 
@@ -80,6 +78,14 @@ export default function RootPage() {
     setCodeString(""); // Clear the diff editor
   };
 
+  const handleEditorChange = (
+    value: string | undefined,
+    file: CodeFile | undefined
+  ) => {
+    console.log("Editor content changed:", { value, file: file?.name });
+    // You can add additional logic here to track changes
+  };
+
   if (status === "pending") {
     return <>Please put a loader here...</>;
   }
@@ -93,9 +99,15 @@ export default function RootPage() {
   return (
     <>
       <div>
-        <Button onClick={() => commitMutation.mutate({ repoName: "test" })}>
-          Show Toast
-        </Button>
+        <div className="absolute top-4 right-42 z-50">
+          <div className="relative">
+            <Button
+              onClick={() => commitMutation.mutate({ repoName: "NewsTrusty" })}
+            >
+              Show Toast
+            </Button>
+          </div>
+        </div>
         <MergeConflictButton
           selectedFile={selectedFile}
           onResolveConflict={handleResolveConflict}
@@ -108,6 +120,7 @@ export default function RootPage() {
           selectedFile={selectedFile}
           title={"My Project"}
           onFileSelected={handleFileSelected}
+          onChange={handleEditorChange}
         />
         <DiffEditor code={codeString} />
       </div>

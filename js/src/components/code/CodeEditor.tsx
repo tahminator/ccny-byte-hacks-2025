@@ -14,6 +14,7 @@ export default function CodeEditor({
   githubUsername,
   githubRepo,
   onFileSelected,
+  onChange,
 }: CodeEditorProps) {
   // Use the useFileQuery hook to fetch file content
   const {
@@ -24,7 +25,7 @@ export default function CodeEditor({
     // TODO: Replace with actual username and repo
     githubUsername || "manofshad",
     githubRepo || "NewsTrusty",
-    selectedFile?.fullPath,
+    selectedFile?.fullPath
   );
 
   const getFileContent = () => {
@@ -47,6 +48,12 @@ export default function CodeEditor({
     return fileContent;
   };
 
+  const handleEditorChange = (value: string | undefined) => {
+    if (onChange) {
+      onChange(value, selectedFile);
+    }
+  };
+
   return (
     <div className={cn("flex w-full h-full", className)}>
       <FileTree
@@ -58,8 +65,10 @@ export default function CodeEditor({
       <div className="flex-1 h-full bg-white dark:bg-gray-900">
         <Editor
           className="h-full"
-          value={getFileContent()}
+          defaultValue={getFileContent()}
+          key={selectedFile?.fullPath || "default"}
           language={selectedFile?.extension?.toLowerCase() || "plaintext"}
+          onChange={handleEditorChange}
           options={{
             minimap: { enabled: true },
             wordWrap: "on",
