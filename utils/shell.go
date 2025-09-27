@@ -5,11 +5,11 @@ import (
 	"os/exec"
 )
 
-func RunCommand(command string, args ...string) (int, string, string, error) {
+func RunCommand(cmdStr string) (int, string, string, error) {
 	var stdout, stderr bytes.Buffer
 
 	// Construct command
-	cmd := exec.Command(command, args...)
+	cmd := exec.Command("bash", "-c", cmdStr)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
