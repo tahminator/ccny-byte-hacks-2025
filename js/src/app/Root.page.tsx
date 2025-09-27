@@ -13,8 +13,10 @@ import testFiles from "./test.json";
 const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
 
 export default function RootPage() {
-  const [selectedFile, setSelectedFile] = useState<CodeFile | null>(null);
   const [codeString, setCodeString] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
+    undefined,
+  );
 
   const { startStream } = useStream({
     onChunk: (chunk) => {

@@ -22,12 +22,16 @@ export default function FileTreeNode({
     CodeIcon = mapLanguageToIcon(node.extension);
   }
 
+  if (selectedFile === node) {
+    console.log("FOUND IT");
+  }
+
   return (
     <div>
       <div
         className={cn(
-          "flex items-center gap-1 py-1 px-2 text-sm cursor-pointer hover:bg-muted/50 group",
-          selectedFile === node && "bg-primary/10 text-primary",
+          "flex items-center gap-1 py-1 px-2 text-sm cursor-pointer hover:bg-gray-400 group",
+          selectedFile === node && "bg-gray-300 text-primary",
           node.type === "FILE" && node.isConflicted && "text-conflict-current",
         )}
         style={{ paddingLeft: `${level * 12 + 8}px` }}

@@ -5,7 +5,7 @@ import type { CodeFile } from "@/lib/api/types/code";
 import { Button } from "@/components/ui/button";
 
 interface MergeConflictButtonProps {
-  selectedFile: CodeFile | null;
+  selectedFile: CodeFile | undefined;
   onResolveConflict?: (context: string) => void;
 }
 
