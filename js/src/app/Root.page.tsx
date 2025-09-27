@@ -8,6 +8,7 @@ import CodeEditor from "@/components/code/CodeEditor";
 import DiffEditor from "@/components/code/DiffEditor";
 import MergeConflictButton from "@/components/code/MergeConflictButton";
 import { Button } from "@/components/ui/button";
+import { useFileTreeQuery } from "@/lib/api/queries/auth";
 import { useCommitRepositoryMutation } from "@/lib/api/queries/github";
 import { useStream } from "@/lib/hooks/useStream";
 
