@@ -29,10 +29,8 @@ export default function RootPage() {
     console.log("Resolving merge conflict with context:", context);
     console.log("Selected file:", selectedFile);
 
-    // Reset the code string when starting a new resolution
     setCodeString("");
 
-    // Start streaming from the Gemini API
     const message = context || "Please help resolve this merge conflict";
     await startStream("http://localhost:8080/api/gemini/test", { message });
   };
@@ -42,17 +40,22 @@ export default function RootPage() {
     setSelectedFile(file);
   };
   return (
-    <div className="relative flex w-[100vw] h-[100vh] justify-center items-start pt-16">
-      <MergeConflictButton
-        selectedFile={selectedFile}
-        onResolveConflict={handleResolveConflict}
-      />
-      <CodeEditor
-        files={files}
-        title={"My Project"}
-        onFileSelected={handleFileSelected}
-      />
-      <DiffEditor code={codeString} />
-    </div>
+    <>
+      <div>
+        <MergeConflictButton
+          selectedFile={selectedFile}
+          onResolveConflict={handleResolveConflict}
+        />
+      </div>
+      <div className="relative flex w-[100vw] h-[100vh] justify-center items-start pt-16">
+        <CodeEditor
+          className="max-w-full"
+          files={files}
+          title={"My Project"}
+          onFileSelected={handleFileSelected}
+        />
+        <DiffEditor code={codeString} />
+      </div>
+    </>
   );
 }

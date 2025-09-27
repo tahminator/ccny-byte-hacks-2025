@@ -1,13 +1,14 @@
 import { Editor } from "@monaco-editor/react";
 
 import FileTree from "@/components/code/tree/FileTree";
+import { cn } from "@/lib/utils";
 
 import type { CodeEditorProps } from "./types";
 
 export default function CodeEditor({
   files,
   selectedFile,
-
+  className,
   title,
   onFileSelected,
 }: CodeEditorProps) {
@@ -30,7 +31,7 @@ export default function CodeEditor({
   };
 
   return (
-    <div className="flex w-full h-full">
+    <div className={cn("flex w-full h-full", className)}>
       <FileTree
         title={title}
         files={files}

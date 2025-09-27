@@ -5,5 +5,6 @@ export type CodeEditorProps = {
   selectedFile?: CodeFile;
   code?: string;
   title?: string;
+  className?: string;
   onFileSelected?: (file: CodeFile) => void;
 };
