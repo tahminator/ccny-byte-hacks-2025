@@ -6,6 +6,7 @@ import { useTheme } from "@/lib/themeProvider";
 import { cn } from "@/lib/utils";
 
 import type { CodeEditorProps } from "./types";
+import { useEffect, useState } from "react";
 
 export default function CodeEditor({
   files,
@@ -18,22 +19,14 @@ export default function CodeEditor({
   onChange,
 }: CodeEditorProps) {
   const { theme } = useTheme();
-  
- 
-  const getMonacoTheme = () => {
-    if (theme === "dark") return "vs-dark";
-    if (theme === "light") return "vs-light";
-   
-    if (typeof window !== "undefined") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches 
-        ? "vs-dark" 
-        : "vs-light";
-    }
-    return "vs-dark"; 
-  };
+  const [monacoTheme, setMonacoTheme] = useState("");
 
-  const monacoTheme = getMonacoTheme();
-  
+  useEffect(() => {
+    setTimeout(() => {
+      setMonacoTheme("vs-dark");
+    }, 50);
+  }, []);
+
   const {
     data: fileContent,
     isLoading,
@@ -79,10 +72,12 @@ export default function CodeEditor({
         selectedFile={selectedFile}
         onFileSelected={onFileSelected}
       />
-      <div className={cn(
-        "flex-1 h-full",
-        monacoTheme === "vs-dark" ? "bg-[#1e1e1e]" : "bg-[#ffffff]"
-      )}>
+      <div
+        className={cn(
+          "flex-1 h-full",
+          monacoTheme === "vs-dark" ? "bg-[#1e1e1e]" : "bg-[#ffffff]",
+        )}
+      >
         <Editor
           className="h-full"
           value={getFileContent()}
