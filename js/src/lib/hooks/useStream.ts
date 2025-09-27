@@ -11,24 +11,22 @@ export function useStream(options: UseStreamOptions = {}) {
   const [streamedText, setStreamedText] = useState("");
   const [error, setError] = useState<Error | null>(null);
 
+  const STREAM_ENDPOINT = "http://localhost:8080/api/gemini/resolve-conflicts";
+
   const startStream = useCallback(
-    async (url: string, streamOptions?: { message?: string }) => {
+    async (streamOptions?: { message?: string }) => {
       setIsStreaming(true);
       setStreamedText("");
       setError(null);
 
       try {
-        // Build URL with query parameters for GET request
-        const urlWithParams = new URL(url);
-        if (streamOptions?.message) {
-          urlWithParams.searchParams.set("message", streamOptions.message);
-        }
-
-        const response = await fetch(urlWithParams.toString(), {
-          method: "GET",
+        const response = await fetch(STREAM_ENDPOINT, {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
             Accept: "text/plain",
           },
+          body: JSON.stringify(streamOptions),
         });
 
         if (!response.ok) {

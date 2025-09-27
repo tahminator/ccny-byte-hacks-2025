@@ -15,7 +15,7 @@ const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
 export default function RootPage() {
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
-    undefined,
+    undefined
   );
 
   const { startStream } = useStream({
@@ -34,7 +34,7 @@ export default function RootPage() {
     setCodeString("");
 
     const message = context || "Please help resolve this merge conflict";
-    await startStream("http://localhost:8080/api/gemini/test", { message });
+    await startStream({ message });
   };
 
   const handleFileSelected = (file: CodeFile) => {

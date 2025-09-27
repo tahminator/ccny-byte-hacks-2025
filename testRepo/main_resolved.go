@@ -30,12 +30,12 @@ func main() {
 		Name:  "John Doe",
 		Email: "john@example.com",
 	}
-	
+
 	if err := user.Validate(); err != nil {
 		log.Printf("Validation error: %v", err)
 		return
 	}
-	
+
 	fmt.Printf("User %s created successfully\n", user.Name)
 }
 
