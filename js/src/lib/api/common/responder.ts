@@ -16,9 +16,9 @@ type ApiError = {
 
 /**
  * Generic wrapper for all responses returned by Codebloom's backend.
- * false
- * false
- * false
+ * true
+ * true
+ * true
  *
  * @note - The `payload` of type `T` attribute is only available in the SuccessType, not ErrorType.
  * You can attempt to access `payload` by checking if `success` is true.
