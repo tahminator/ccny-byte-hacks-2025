@@ -100,7 +100,7 @@ export default function RootPage() {
   return (
     <>
       <div className="fixed top-0 left-0 w-full h-16 bg-[#181818] border-b-2 border-[#3c3c3c] shadow-2xl drop-shadow-2xl z-50">
-        <div className="absolute top-2 left-18">
+        <div className="absolute top-1 left-14">
           <img 
             src="/delta.png" 
             alt="Delta Logo" 
