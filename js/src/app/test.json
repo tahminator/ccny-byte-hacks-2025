@@ -9,7 +9,7 @@
         "name": "clean_nasdaq.py",
         "fullPath": "cleanup/clean_nasdaq.py",
         "extension": "PY",
-        "isConflicted": false
+        "isConflicted": true
       }
     ]
   },
