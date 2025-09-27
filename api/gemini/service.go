@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/tahminator/go-react-template/database/repository/repo_chunks"
 	"google.golang.org/genai"
 )
@@ -111,6 +112,34 @@ func (gs *GeminiService) ResolveConflictsToFile(
 	}
 
 	return response, nil
+}
+
+func (gs *GeminiService) StreamResolveConflictsToFile(
+	c *gin.Context,
+	conflictContent string,
+	filePath string,
+	userQuery string,
+	repoHash string,
+) {
+	similarChunks, err := gs.repoChunksRepo.GetSimilarChunks(c.Request.Context(), userQuery, repoHash, 5)
+	if err != nil {
+		similarChunks = []repo_chunks.SimilarChunk{}
+	}
+
+	prompt := Prompt + "\n\nUser Request: " + userQuery + "\n\n"
+	prompt += fmt.Sprintf("File: %s\n", filePath)
+	prompt += "CONFLICTED FILE CONTENT:\n"
+	prompt += conflictContent + "\n\n"
+
+	if len(similarChunks) > 0 {
+		prompt += "REPOSITORY CONTEXT:\n"
+		for i, chunk := range similarChunks {
+			prompt += fmt.Sprintf("Context %d from %s (similarity: %.3f):\n", i+1, chunk.Source, chunk.Distance)
+			prompt += fmt.Sprintf("Content:\n%s\n\n", chunk.Chunk)
+		}
+	}
+
+	StreamGeminiResponse(c, gs.client, prompt)
 }
 
 func (gs *GeminiService) ResolveConflictsWithSemanticSearch(
