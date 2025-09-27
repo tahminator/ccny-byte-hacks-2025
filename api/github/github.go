@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	_ "regexp"
 	"strconv"
 	"strings"
 	_ "strings"
@@ -343,6 +342,108 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			c.JSON(http.StatusOK, utils.Success("ok", gin.H{}))
 			return
 		}
+	})
+
+	r.POST("/merge/accept", func(c *gin.Context) {
+		type req struct {
+			NewFileData string `json:"newFileData"` // can be empty if you want to blank the file
+			FullPath    string `json:"fullPath"`    // e.g., "src/App.tsx" (relative to repo root)
+			RepoName    string `json:"repoName"`    // e.g., "StockProfitSim"
+		}
+
+		var body req
+		if err := c.ShouldBindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json body"})
+			return
+		}
+		body.FullPath = strings.TrimSpace(body.FullPath)
+		body.RepoName = strings.TrimSpace(body.RepoName)
+
+		if body.RepoName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "repoName is required"})
+			return
+		}
+		if err := validateSlug(body.RepoName); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid repoName"})
+			return
+		}
+		if body.FullPath == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fullPath is required"})
+			return
+		}
+		// fullPath must be a safe relative path
+		if strings.HasPrefix(body.FullPath, "/") || strings.Contains(body.FullPath, "..") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fullPath must be a safe relative path"})
+			return
+		}
+
+		// auth object
+		aoVal, ok := c.Get("ao")
+		if !ok || aoVal == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth object in context"})
+			return
+		}
+		ao, ok := aoVal.(*utils.AuthenticationObject)
+		if !ok || ao == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid auth object in context"})
+			return
+		}
+
+		// load user + github username
+		u, err := userRepository.GetUserById(c.Request.Context(), ao.User.Id)
+		if err != nil || u == nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
+		if u.GithubUsername == nil || strings.TrimSpace(*u.GithubUsername) == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "github username not set for user"})
+			return
+		}
+		owner := strings.TrimSpace(*u.GithubUsername)
+
+		// build paths: repos/{userId}/{owner}/{repoName}/{fullPath}
+		base := filepath.Join("repos", ao.User.Id.String(), owner)
+		repoAbs := filepath.Join(base, body.RepoName)
+		if st, err := os.Stat(repoAbs); err != nil || !st.IsDir() {
+			c.JSON(http.StatusNotFound, gin.H{"error": "repo not found on disk"})
+			return
+		}
+
+		relClean := filepath.Clean(body.FullPath)
+		fileAbs := filepath.Join(repoAbs, relClean)
+
+		// containment check
+		repoAbsClean := filepath.Clean(repoAbs)
+		fileAbsClean := filepath.Clean(fileAbs)
+		sep := string(os.PathSeparator)
+		if !strings.HasPrefix(fileAbsClean+sep, repoAbsClean+sep) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid fullPath; escapes repo root"})
+			return
+		}
+
+		// ensure parent dirs and write file
+		if err := os.MkdirAll(filepath.Dir(fileAbsClean), 0o755); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create parent directories"})
+			return
+		}
+		if err := os.WriteFile(fileAbsClean, []byte(body.NewFileData), 0o644); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to write file"})
+			return
+		}
+
+		// stage the change: git -C <repoAbs> add -- <fullPath>
+		posixRel := filepath.ToSlash(relClean)
+		if code, _, errOut, err := utils.RunCommand(fmt.Sprintf(`git -C %q add -- %q`, repoAbsClean, posixRel)); err != nil || code != 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "git add failed", "details": errOut})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message":  "ok",
+			"repoName": body.RepoName,
+			"fullPath": posixRel,
+			"staged":   true,
+		})
 	})
 
 	return r
