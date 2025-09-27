@@ -8,7 +8,7 @@ import DiffEditor from "@/components/code/DiffEditor";
 import MergeConflictButton from "@/components/code/MergeConflictButton";
 import { useStream } from "@/lib/hooks/useStream";
 
-import testFiles from "./test.json";
+import testFiles from "./test2.json";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;

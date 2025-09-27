@@ -1,0 +1,72 @@
+[
+  {
+    "type": "DIRECTORY",
+    "name": "Models",
+    "fullPath": "Models",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "fake_news_detector.pkl",
+        "fullPath": "Models/fake_news_detector.pkl",
+        "extension": "PKL",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "tfidf_vectorizer.pkl",
+        "fullPath": "Models/tfidf_vectorizer.pkl",
+        "extension": "PKL",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
+    "name": "NewsTrusty",
+    "fullPath": "NewsTrusty",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "manifest.json",
+        "fullPath": "NewsTrusty/manifest.json",
+        "extension": "JSON",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "popup.html",
+        "fullPath": "NewsTrusty/popup.html",
+        "extension": "HTML",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "popup.js",
+        "fullPath": "NewsTrusty/popup.js",
+        "extension": "JS",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "styles.css",
+        "fullPath": "NewsTrusty/styles.css",
+        "extension": "CSS",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "FILE",
+    "name": "README.md",
+    "fullPath": "README.md",
+    "extension": "MD",
+    "isConflicted": false
+  },
+  {
+    "type": "FILE",
+    "name": "server.py",
+    "fullPath": "server.py",
+    "extension": "PY",
+    "isConflicted": false
+  }
+]
