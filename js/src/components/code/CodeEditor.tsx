@@ -25,7 +25,7 @@ export default function CodeEditor({
     // TODO: Replace with actual username and repo
     githubUsername || "manofshad",
     githubRepo || "NewsTrusty",
-    selectedFile?.fullPath
+    selectedFile?.fullPath,
   );
 
   const getFileContent = () => {
@@ -65,7 +65,7 @@ export default function CodeEditor({
       <div className="flex-1 h-full bg-white dark:bg-gray-900">
         <Editor
           className="h-full"
-          defaultValue={getFileContent()}
+          value={getFileContent()}
           key={selectedFile?.fullPath || "default"}
           language={selectedFile?.extension?.toLowerCase() || "plaintext"}
           onChange={handleEditorChange}

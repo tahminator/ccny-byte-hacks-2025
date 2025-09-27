@@ -16,7 +16,7 @@ export default function RootPage() {
   const { data, status } = useFileTreeQuery("NewsTrusty");
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
-    undefined
+    undefined,
   );
   const [resolvedCode, setResolvedCode] = useState<string>("");
 
@@ -58,7 +58,7 @@ export default function RootPage() {
 
   const handleAcceptResolvedCode = async (
     filePath: string,
-    resolvedCodeContent: string
+    resolvedCodeContent: string,
   ) => {
     console.log("Accepting resolved code for:", filePath);
     console.log("Resolved code:", resolvedCodeContent);
@@ -80,7 +80,7 @@ export default function RootPage() {
 
   const handleEditorChange = (
     value: string | undefined,
-    file: CodeFile | undefined
+    file: CodeFile | undefined,
   ) => {
     console.log("Editor content changed:", { value, file: file?.name });
     // You can add additional logic here to track changes
