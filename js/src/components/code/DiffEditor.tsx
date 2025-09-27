@@ -12,7 +12,7 @@ export default function DiffEditor({ code }: DiffEditorProps) {
       className={cn("h-full", code ? "h-full max-w-full" : "hidden")}
       value={code}
       options={{
-        readOnly: true,
+        readOnly: false,
         minimap: { enabled: false },
       }}
     />
