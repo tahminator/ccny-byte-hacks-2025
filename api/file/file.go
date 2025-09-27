@@ -197,8 +197,54 @@ func handleGetFileTree(c *gin.Context, userRepository user.UserRepository) {
 		return
 	}
 
-	// 3) Build **children** of the repo root (array), not a root DIRECTORY node
-	children, err := buildRepoChildren(cleanRepoPath)
+	// ------------------------------
+	// GIT FLOW: fetch -> merge -> conflict handling (or force conflict mode)
+	// ------------------------------
+
+	// git fetch
+	if code, _, errOut, err := utils.RunCommand("git", "-C", cleanRepoPath, "fetch"); err != nil || code != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "git fetch failed", "details": errOut})
+		return
+	}
+
+	// Try a straight merge first
+	code, _, _, _ := utils.RunCommand("git", "-C", cleanRepoPath, "merge")
+	conflictedMap := map[string]bool{}
+
+	// Always decide based on actual merge state (MERGE_HEAD), not only exit code.
+	if isMidMerge(cleanRepoPath) {
+		// We are in merge-conflict mode → collect conflicted files
+		conflictedMap = collectConflicts(cleanRepoPath)
+	} else if code == 0 {
+		// Clean merge; nothing conflicted
+	} else {
+		// Not in merge mode and merge didn't succeed cleanly → force-conflict path
+
+		// 1) Find incoming files
+		changed := getChangedFiles(cleanRepoPath) // HEAD..FETCH_HEAD
+		paths := splitNonEmptyLines(changed)
+
+		// 2) Stage those paths (if any)
+		for _, p := range paths {
+			utils.RunCommand("git", "-C", cleanRepoPath, "add", "--", p)
+		}
+
+		// 3) Marker commit (only if we added something)
+		if len(paths) > 0 {
+			utils.RunCommand("git", "-C", cleanRepoPath, "commit", "-m", "This commit is a merge conflict")
+		}
+
+		// 4) Attempt merge to trigger conflicts
+		utils.RunCommand("git", "-C", cleanRepoPath, "merge")
+
+		// 5) If we are now in merge mode, collect conflicts
+		if isMidMerge(cleanRepoPath) {
+			conflictedMap = collectConflicts(cleanRepoPath)
+		}
+	}
+
+	// 3) Build **children** of the repo root (array), conflict-aware
+	children, err := buildRepoChildren(cleanRepoPath, conflictedMap)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to build file tree"})
 		return
@@ -209,7 +255,7 @@ func handleGetFileTree(c *gin.Context, userRepository user.UserRepository) {
 }
 
 // buildRepoChildren returns the mixed list of files/dirs directly under repo root
-func buildRepoChildren(repoAbsPath string) ([]any, error) {
+func buildRepoChildren(repoAbsPath string, conflicted map[string]bool) ([]any, error) {
 	entries, err := os.ReadDir(repoAbsPath)
 	if err != nil {
 		return nil, err
@@ -240,19 +286,19 @@ func buildRepoChildren(repoAbsPath string) ([]any, error) {
 
 		if entry.IsDir() {
 			// Recursively build full directory node
-			dirNode, err := buildDirectoryTree(childAbs, filepath.ToSlash(childRel))
+			dirNode, err := buildDirectoryTree(childAbs, filepath.ToSlash(childRel), conflicted)
 			if err != nil {
 				return nil, err
 			}
 			children = append(children, dirNode)
 		} else {
-			// File node
+			rel := filepath.ToSlash(childRel)
 			fileNode := CodeFile{
 				Type:         "FILE",
 				Name:         entry.Name(),
-				FullPath:     filepath.ToSlash(childRel),
+				FullPath:     rel,
 				Extension:    mapExtToCodeExtension(entry.Name()),
-				IsConflicted: false,
+				IsConflicted: conflicted[rel],
 			}
 			children = append(children, fileNode)
 		}
@@ -262,7 +308,7 @@ func buildRepoChildren(repoAbsPath string) ([]any, error) {
 }
 
 // buildDirectoryTree builds a CodeDirectory for a directory (recursively)
-func buildDirectoryTree(absPath string, relPath string) (CodeDirectory, error) {
+func buildDirectoryTree(absPath string, relPath string, conflicted map[string]bool) (CodeDirectory, error) {
 	name := filepath.Base(absPath)
 	dirNode := CodeDirectory{
 		Type:           "DIRECTORY",
@@ -298,7 +344,7 @@ func buildDirectoryTree(absPath string, relPath string) (CodeDirectory, error) {
 		childRel := filepath.ToSlash(filepath.Join(relPath, entry.Name()))
 
 		if entry.IsDir() {
-			childDir, err := buildDirectoryTree(childAbs, childRel)
+			childDir, err := buildDirectoryTree(childAbs, childRel, conflicted)
 			if err != nil {
 				return dirNode, err
 			}
@@ -311,7 +357,7 @@ func buildDirectoryTree(absPath string, relPath string) (CodeDirectory, error) {
 			Name:         entry.Name(),
 			FullPath:     childRel,
 			Extension:    mapExtToCodeExtension(entry.Name()),
-			IsConflicted: false,
+			IsConflicted: conflicted[childRel],
 		}
 		dirNode.SubDirectories = append(dirNode.SubDirectories, fileNode)
 	}
@@ -368,4 +414,70 @@ func mapExtToCodeExtension(filename string) CodeExtension {
 		}
 		return CodeExtension(strings.ToUpper(ext))
 	}
+}
+
+// getGitDir returns the absolute path to the repo's git dir (handles worktrees)
+func getGitDir(repoPath string) (string, error) {
+	_, out, _, err := utils.RunCommand("git", "-C", repoPath, "rev-parse", "--git-dir")
+	if err != nil {
+		return "", err
+	}
+	dir := strings.TrimSpace(out)
+	if dir == "" {
+		return "", os.ErrNotExist
+	}
+	// rev-parse may return a relative path like ".git"
+	if !filepath.IsAbs(dir) {
+		dir = filepath.Join(repoPath, dir)
+	}
+	return filepath.Clean(dir), nil
+}
+
+// isMidMerge returns true iff $GIT_DIR/MERGE_HEAD exists
+func isMidMerge(repoPath string) bool {
+	gitDir, err := getGitDir(repoPath)
+	if err != nil {
+		return false
+	}
+	mergeHead := filepath.Join(gitDir, "MERGE_HEAD")
+	if st, err := os.Stat(mergeHead); err == nil && !st.IsDir() {
+		return true
+	}
+	return false
+}
+
+// getChangedFiles returns newline-separated files for HEAD..FETCH_HEAD (string)
+func getChangedFiles(repoPath string) string {
+	_, out, _, _ := utils.RunCommand("git", "-C", repoPath, "diff", "--name-only", "HEAD..FETCH_HEAD")
+	return strings.TrimSpace(out)
+}
+
+// collectConflicts returns a set of conflicted file paths (relative to repo root)
+func collectConflicts(repoPath string) map[string]bool {
+	m := map[string]bool{}
+	_, out, _, _ := utils.RunCommand("git", "-C", repoPath, "diff", "--name-only", "--diff-filter=U")
+	for _, line := range splitNonEmptyLines(out) {
+		rel := filepath.ToSlash(strings.TrimSpace(line))
+		if rel != "" {
+			m[rel] = true
+		}
+	}
+	return m
+}
+
+// splitNonEmptyLines trims and splits a blob into non-empty lines
+func splitNonEmptyLines(s string) []string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return nil
+	}
+	lines := strings.Split(s, "\n")
+	out := make([]string, 0, len(lines))
+	for _, ln := range lines {
+		ln = strings.TrimSpace(ln)
+		if ln != "" {
+			out = append(out, ln)
+		}
+	}
+	return out
 }
