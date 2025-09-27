@@ -96,8 +96,15 @@ export default function RootPage() {
 
   return (
     <>
-      <div>
-        <div className="absolute top-4 right-42 z-50">
+      <div className="fixed top-0 left-0 w-full h-16 bg-[#181818] border-b-2 border-[#3c3c3c] shadow-2xl drop-shadow-2xl z-50">
+        <div className="absolute top-2 left-18">
+          <img 
+            src="/delta.png" 
+            alt="Delta Logo" 
+            className="h-16 w-17 object-contain bg-transparent"
+          />
+        </div>
+        <div className="absolute top-4 right-42">
           <div className="relative">
             <Button
               onClick={() => {
@@ -137,9 +144,10 @@ export default function RootPage() {
           onResolveConflict={handleResolveConflict}
         />
       </div>
-      <div className="relative flex w-[100vw] h-[100vh] justify-center items-start pt-16">
+      
+      <div className="relative flex w-[100vw] h-[100vh] justify-center items-start pt-16 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] drop-shadow-2xl">
         <CodeEditor
-          className="max-w-full"
+          className="max-w-full shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] drop-shadow-2xl border-t-2 border-[#3c3c3c]"
           files={files}
           selectedFile={selectedFile}
           title={"My Project"}
