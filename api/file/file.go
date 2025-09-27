@@ -144,7 +144,8 @@ func getGithubUsername(c *gin.Context, userRepository user.UserRepository, userI
 }
 
 func handleGetFileTree(c *gin.Context, userRepository user.UserRepository) {
-	userIDStr := strings.TrimSpace(c.Query("userId"))
+	ao := c.MustGet("ao").(*utils.AuthenticationObject)
+	userIDStr := ao.User.Id.String()
 	repoName := strings.TrimSpace(c.Query("repoName"))
 
 	if userIDStr == "" || repoName == "" {

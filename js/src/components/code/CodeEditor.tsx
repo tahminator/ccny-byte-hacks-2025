@@ -24,7 +24,7 @@ export default function CodeEditor({
     // TODO: Replace with actual username and repo
     githubUsername || "manofshad",
     githubRepo || "NewsTrusty",
-    selectedFile?.fullPath || ""
+    selectedFile?.fullPath,
   );
 
   const getFileContent = () => {

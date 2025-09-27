@@ -1,22 +1,22 @@
 import { useState } from "react";
 
-import type { CodeDirectory, CodeFile } from "@/lib/api/types/code";
+import type { CodeFile } from "@/lib/api/types/code";
 
 import CodeModal from "@/components/code/bottombuttons/CodeModal";
 import CodeEditor from "@/components/code/CodeEditor";
 import DiffEditor from "@/components/code/DiffEditor";
 import MergeConflictButton from "@/components/code/MergeConflictButton";
+// import testFiles from "./test2.json";
+import { useFileTreeQuery } from "@/lib/api/queries/auth";
 import { useStream } from "@/lib/hooks/useStream";
 
-import testFiles from "./test2.json";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
+// const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
 
 export default function RootPage() {
+  const { data, status } = useFileTreeQuery("NewsTrusty");
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
-    undefined
+    undefined,
   );
   const [resolvedCode, setResolvedCode] = useState<string>("");
 
@@ -50,7 +50,7 @@ export default function RootPage() {
 
   const handleAcceptResolvedCode = async (
     filePath: string,
-    resolvedCodeContent: string
+    resolvedCodeContent: string,
   ) => {
     console.log("Accepting resolved code for:", filePath);
     console.log("Resolved code:", resolvedCodeContent);
@@ -69,6 +69,17 @@ export default function RootPage() {
     setResolvedCode(""); // Clear the modal
     setCodeString(""); // Clear the diff editor
   };
+
+  if (status === "pending") {
+    return <>Please put a loader here...</>;
+  }
+
+  if (status === "error") {
+    return <>Failed to fetch repository tree</>;
+  }
+
+  const files = data;
+
   return (
     <>
       <div>

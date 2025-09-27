@@ -1,9 +1,7 @@
 import type { CodeDirectory, CodeFile } from "@/lib/api/types/code";
 
-export async function getFileTree(userId: string, repoName: string) {
-  const res = await fetch(
-    `/api/file/tree/generate?userId=${userId}&repoName=${repoName}`
-  );
+export async function getFileTree(repoName: string) {
+  const res = await fetch(`/api/file/tree/generate?repoName=${repoName}`);
 
   // TODO - Re-write endpoint to use ApiResponder.
   if (!res.ok) {
@@ -16,10 +14,10 @@ export async function getFileTree(userId: string, repoName: string) {
 export async function getFile(
   githubUsername: string,
   githubRepo: string,
-  filePath: string
+  filePath: string,
 ) {
   const res = await fetch(
-    `/api/file/data/${githubUsername}/${githubRepo}/${filePath}`
+    `/api/file/data/${githubUsername}/${githubRepo}/${filePath}`,
   );
 
   if (!res.ok) {
