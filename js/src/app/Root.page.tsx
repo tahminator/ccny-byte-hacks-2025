@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 import type { CodeFile } from "@/lib/api/types/code";
 
@@ -6,8 +7,8 @@ import CodeModal from "@/components/code/bottombuttons/CodeModal";
 import CodeEditor from "@/components/code/CodeEditor";
 import DiffEditor from "@/components/code/DiffEditor";
 import MergeConflictButton from "@/components/code/MergeConflictButton";
-// import testFiles from "./test2.json";
-import { useFileTreeQuery } from "@/lib/api/queries/auth";
+import { Button } from "@/components/ui/button";
+import { useCommitRepositoryMutation } from "@/lib/api/queries/github";
 import { useStream } from "@/lib/hooks/useStream";
 
 // const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
@@ -16,10 +17,18 @@ export default function RootPage() {
   const { data, status } = useFileTreeQuery("NewsTrusty");
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
-    undefined,
+    undefined
   );
   const [resolvedCode, setResolvedCode] = useState<string>("");
 
+  const commitMutation = useCommitRepositoryMutation({
+    onSuccess: () => {
+      toast.success("Repository committed successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to commit repository");
+    },
+  });
   const { startStream } = useStream({
     onChunk: (chunk) => {
       setCodeString((prev) => prev + chunk);
@@ -50,7 +59,7 @@ export default function RootPage() {
 
   const handleAcceptResolvedCode = async (
     filePath: string,
-    resolvedCodeContent: string,
+    resolvedCodeContent: string
   ) => {
     console.log("Accepting resolved code for:", filePath);
     console.log("Resolved code:", resolvedCodeContent);
@@ -83,6 +92,9 @@ export default function RootPage() {
   return (
     <>
       <div>
+        <Button onClick={() => commitMutation.mutate({ repoName: "test" })}>
+          Show Toast
+        </Button>
         <MergeConflictButton
           selectedFile={selectedFile}
           onResolveConflict={handleResolveConflict}

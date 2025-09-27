@@ -4,6 +4,7 @@ import { StrictMode } from "react";
 import "./main.css";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router";
+import { Toaster } from "sonner";
 
 import ReactQueryProvider from "@/lib/query";
 import { router } from "@/lib/router";
@@ -12,8 +13,9 @@ import { router } from "@/lib/router";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ReactQueryProvider>
+      <Toaster />
       <RouterProvider router={router} />
       <ReactQueryDevtools />
     </ReactQueryProvider>
-  </StrictMode>,
+  </StrictMode>
 );
