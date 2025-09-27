@@ -1,14 +1,10 @@
-import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { commitRepository } from "../../fetchers/github";
 
-export const useCommitRepositoryMutation = (
-  options?: UseMutationOptions<
-    unknown,
-    Error,
-    { repoName: string; newFileData: string; path: string }
-  >
-) => {
+export const useCommitRepositoryMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({
       repoName,
@@ -19,6 +15,8 @@ export const useCommitRepositoryMutation = (
       newFileData: string;
       path: string;
     }) => commitRepository(repoName, newFileData, path),
-    ...options,
+    onSettled: () => {
+      queryClient.invalidateQueries({});
+    },
   });
 };

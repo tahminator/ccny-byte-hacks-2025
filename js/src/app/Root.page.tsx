@@ -21,14 +21,7 @@ export default function RootPage() {
   const [resolvedCode, setResolvedCode] = useState<string>("");
   const [currentEditorContent, setCurrentEditorContent] = useState<string>("");
 
-  const commitMutation = useCommitRepositoryMutation({
-    onSuccess: () => {
-      toast.success("Repository committed successfully!");
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to commit repository");
-    },
-  });
+  const commitMutation = useCommitRepositoryMutation();
   const { startStream } = useStream({
     onChunk: (chunk) => {
       setCodeString((prev) => prev + chunk);
@@ -112,11 +105,23 @@ export default function RootPage() {
                   toast.error("File content is empty");
                   return;
                 }
-                commitMutation.mutate({
-                  repoName: "NewsTrusty",
-                  newFileData: currentEditorContent,
-                  path: selectedFile.fullPath,
-                });
+                commitMutation.mutate(
+                  {
+                    repoName: "NewsTrusty",
+                    newFileData: currentEditorContent,
+                    path: selectedFile.fullPath,
+                  },
+                  {
+                    onSuccess: () => {
+                      toast.success("Repository committed successfully!");
+                    },
+                    onError: (error) => {
+                      toast.error(
+                        error.message || "Failed to commit repository"
+                      );
+                    },
+                  }
+                );
               }}
             >
               Commit Changes
