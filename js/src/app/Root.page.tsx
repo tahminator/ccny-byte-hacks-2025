@@ -37,7 +37,7 @@ export default function RootPage() {
     setCodeString("");
 
     await startStream({
-      conflictContent: "", // TODO: Get actual file content
+      conflictContent: selectedFile?.code || "",
       filePath: selectedFile?.fullPath || "",
       userQuery: context || "Please help resolve this merge conflict",
     });
@@ -48,16 +48,19 @@ export default function RootPage() {
     setSelectedFile(file);
   };
 
-  const handleAcceptResolvedCode = async (filePath: string, resolvedCodeContent: string) => {
+  const handleAcceptResolvedCode = async (
+    filePath: string,
+    resolvedCodeContent: string
+  ) => {
     console.log("Accepting resolved code for:", filePath);
     console.log("Resolved code:", resolvedCodeContent);
-    
+
     // TODO: Add API call to save the resolved code when endpoint is ready
     // const result = await saveResolvedCode(filePath, resolvedCodeContent);
-    
+
     setResolvedCode(""); // Clear the modal
     setCodeString(""); // Clear the diff editor
-    
+
     // TODO: Refetch the file list here when endpoint is ready
     console.log("Code accepted! (API call will be added later)");
   };

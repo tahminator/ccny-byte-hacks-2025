@@ -1,4 +1,20 @@
-export type CodeExtension = "JS" | "TS" | "HTML" | "CSS" | string;
+export type CodeExtension =
+  | "JS"
+  | "TS"
+  | "HTML"
+  | "CSS"
+  | "GO"
+  | "PY"
+  | "JAVA"
+  | "C"
+  | "CPP"
+  | "RS"
+  | "RB"
+  | "PHP"
+  | "SQL"
+  | "TXT"
+  | "UNKNOWN"
+  | string;
 
 export type CodeFile = {
   type: "FILE";
