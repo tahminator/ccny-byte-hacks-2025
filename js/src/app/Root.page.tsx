@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type { CodeDirectory, CodeFile } from "@/lib/api/types/code";
 
+import CodeModal from "@/components/code/bottombuttons/CodeModal";
 import CodeEditor from "@/components/code/CodeEditor";
 import DiffEditor from "@/components/code/DiffEditor";
 import MergeConflictButton from "@/components/code/MergeConflictButton";
@@ -17,6 +18,7 @@ export default function RootPage() {
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
     undefined
   );
+  const [resolvedCode, setResolvedCode] = useState<string>("");
 
   const { startStream } = useStream({
     onChunk: (chunk) => {
@@ -24,6 +26,7 @@ export default function RootPage() {
     },
     onComplete: (fullText) => {
       setCodeString(fullText);
+      setResolvedCode(fullText); // Set resolved code for the modal
     },
   });
 
@@ -44,6 +47,25 @@ export default function RootPage() {
     console.log("File selected:", JSON.stringify(file));
     setSelectedFile(file);
   };
+
+  const handleAcceptResolvedCode = async (filePath: string, resolvedCodeContent: string) => {
+    console.log("Accepting resolved code for:", filePath);
+    console.log("Resolved code:", resolvedCodeContent);
+    
+    // TODO: Add API call to save the resolved code when endpoint is ready
+    // const result = await saveResolvedCode(filePath, resolvedCodeContent);
+    
+    setResolvedCode(""); // Clear the modal
+    setCodeString(""); // Clear the diff editor
+    
+    // TODO: Refetch the file list here when endpoint is ready
+    console.log("Code accepted! (API call will be added later)");
+  };
+
+  const handleRejectResolvedCode = () => {
+    setResolvedCode(""); // Clear the modal
+    setCodeString(""); // Clear the diff editor
+  };
   return (
     <>
       <div>
@@ -62,6 +84,13 @@ export default function RootPage() {
         />
         <DiffEditor code={codeString} />
       </div>
+      <CodeModal
+        resolvedCode={resolvedCode}
+        originalFilePath={selectedFile?.fullPath || ""}
+        isVisible={!!resolvedCode}
+        onAccept={handleAcceptResolvedCode}
+        onReject={handleRejectResolvedCode}
+      />
     </>
   );
 }
