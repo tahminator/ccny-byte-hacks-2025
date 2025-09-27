@@ -39,7 +39,7 @@ export default function RootPage() {
     setCodeString("");
 
     await startStream({
-      conflictContent: "",
+      conflictContent: currentEditorContent,
       filePath: selectedFile?.fullPath || "",
       userQuery: context || "Please help resolve this merge conflict",
     });
@@ -72,11 +72,8 @@ export default function RootPage() {
     setCodeString(""); // Clear the diff editor
   };
 
-  const handleEditorChange = (
-    value: string | undefined,
-    file: CodeFile | undefined
-  ) => {
-    console.log("Editor content changed:", { value, file: file?.name });
+  const handleEditorChange = (value: string | undefined) => {
+    console.log("Editor content changed:", { value });
     setCurrentEditorContent(value || "");
   };
 

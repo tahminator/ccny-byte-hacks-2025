@@ -5,7 +5,7 @@ import { getFile } from "../../fetchers/file";
 export const useFileQuery = (
   githubUsername: string,
   githubRepo: string,
-  filePath?: string,
+  filePath?: string
 ) =>
   useQuery({
     queryKey: ["file", githubUsername, githubRepo, filePath],
