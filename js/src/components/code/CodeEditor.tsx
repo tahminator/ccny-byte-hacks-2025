@@ -34,14 +34,14 @@ export default function CodeEditor({
     // TODO: Replace with actual username and repo
     githubUsername || "manofshad",
     githubRepo || "NewsTrusty",
-    selectedFile?.fullPath
+    selectedFile?.fullPath,
   );
 
-  useEffect(() => {
-    if (status === "success") {
-      onChange?.(fileContent);
-    }
-  }, [fileContent, onChange, status]);
+  // useEffect(() => {
+  //   if (status === "success") {
+  //     onChange?.(fileContent);
+  //   }
+  // }, [fileContent, onChange, status]);
 
   const getFileContent = () => {
     if (!selectedFile) {
@@ -80,7 +80,7 @@ export default function CodeEditor({
       <div
         className={cn(
           "flex-1 h-full",
-          monacoTheme === "vs-dark" ? "bg-[#1e1e1e]" : "bg-[#ffffff]"
+          monacoTheme === "vs-dark" ? "bg-[#1e1e1e]" : "bg-[#ffffff]",
         )}
       >
         <Editor
