@@ -9,12 +9,12 @@ Delta leverages AI to properly reason about which changes are most appropriate t
 
 
 
-##Tech Stack
+##  Tech Stack
 Front End : HTML/CSS, TYPESCRIPT, REACT
 BACKEND: GO, Postgresql, Gemini AI
 Tools:  DEBEAVER,
 
-Authors:
+## Authors:
 Tahmid Ahmed
 Shadman Farhan
 Angela Yu
@@ -22,7 +22,7 @@ Alfardil Alam
 
 
 
-##How to Install
+##  How to Install
 
 brew install go
 
