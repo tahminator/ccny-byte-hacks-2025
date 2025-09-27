@@ -1,3 +1,29 @@
+## About The Project
+
+
+Your IDE for dealing with the one thing vibe coders HATE… MERGE CONFLICTS! 
+
+Startups typically need to build extremely fast. This leads to merge conflicts inexperienced developers cannot handle. 
+
+Delta leverages AI to properly reason about which changes are most appropriate to keep or delete.
+
+
+
+##Tech Stack
+Front End : HTML/CSS, TYPESCRIPT, REACT
+BACKEND: GO, Postgresql, Gemini AI
+Tools:  DEBEAVER,
+
+Authors:
+Tahmid Ahmed
+Shadman Farhan
+Angela Yu
+Alfardil Alam
+
+
+
+##How to Install
+
 brew install go
 
 go mod tidy
