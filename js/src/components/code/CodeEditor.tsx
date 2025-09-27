@@ -2,6 +2,7 @@ import { Editor } from "@monaco-editor/react";
 
 import FileTree from "@/components/code/tree/FileTree";
 import { useFileQuery } from "@/lib/api/queries/file";
+import { useTheme } from "@/lib/themeProvider";
 import { cn } from "@/lib/utils";
 
 import type { CodeEditorProps } from "./types";
@@ -16,7 +17,23 @@ export default function CodeEditor({
   onFileSelected,
   onChange,
 }: CodeEditorProps) {
-  // Use the useFileQuery hook to fetch file content
+  const { theme } = useTheme();
+  
+ 
+  const getMonacoTheme = () => {
+    if (theme === "dark") return "vs-dark";
+    if (theme === "light") return "vs-light";
+   
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches 
+        ? "vs-dark" 
+        : "vs-light";
+    }
+    return "vs-dark"; 
+  };
+
+  const monacoTheme = getMonacoTheme();
+  
   const {
     data: fileContent,
     isLoading,
@@ -62,13 +79,17 @@ export default function CodeEditor({
         selectedFile={selectedFile}
         onFileSelected={onFileSelected}
       />
-      <div className="flex-1 h-full bg-white dark:bg-gray-900">
+      <div className={cn(
+        "flex-1 h-full",
+        monacoTheme === "vs-dark" ? "bg-[#1e1e1e]" : "bg-[#ffffff]"
+      )}>
         <Editor
           className="h-full"
           value={getFileContent()}
           key={selectedFile?.fullPath || "default"}
           language={selectedFile?.extension?.toLowerCase() || "plaintext"}
           onChange={handleEditorChange}
+          theme={monacoTheme}
           options={{
             minimap: { enabled: true },
             wordWrap: "on",
