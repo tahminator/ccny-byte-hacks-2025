@@ -446,6 +446,77 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		})
 	})
 
+	r.POST("/merge/decline", func(c *gin.Context) {
+		type req struct {
+			FullPath string `json:"fullPath"`
+			RepoName string `json:"repoName"`
+		}
+
+		var body req
+		if err := c.ShouldBindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json body"})
+			return
+		}
+		body.RepoName = strings.TrimSpace(body.RepoName)
+		if body.RepoName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "repoName is required"})
+			return
+		}
+		if err := validateSlug(body.RepoName); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid repoName"})
+			return
+		}
+
+		// auth object
+		aoVal, ok := c.Get("ao")
+		if !ok || aoVal == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth object in context"})
+			return
+		}
+		ao, ok := aoVal.(*utils.AuthenticationObject)
+		if !ok || ao == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid auth object in context"})
+			return
+		}
+
+		// load user + github username
+		u, err := userRepository.GetUserById(c.Request.Context(), ao.User.Id)
+		if err != nil || u == nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
+		if u.GithubUsername == nil || strings.TrimSpace(*u.GithubUsername) == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "github username not set for user"})
+			return
+		}
+		owner := strings.TrimSpace(*u.GithubUsername)
+
+		// build repo path
+		base := filepath.Join("repos", ao.User.Id.String(), owner, body.RepoName)
+		if st, err := os.Stat(base); err != nil || !st.IsDir() {
+			c.JSON(http.StatusNotFound, gin.H{"error": "repo not found on disk"})
+			return
+		}
+
+		// run abort + reset
+		cmd := fmt.Sprintf("cd %s && git merge --abort && git reset --hard HEAD~1", base)
+		status, stdout, stderr, err := utils.RunCommand(cmd)
+		if err != nil || status != 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "failed to decline merge",
+				"details": stderr,
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message":  "merge declined",
+			"repoName": body.RepoName,
+			"action":   "merge-abort-reset",
+			"stdout":   stdout,
+		})
+	})
+
 	return r
 }
 
