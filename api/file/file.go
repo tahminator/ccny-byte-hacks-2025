@@ -2,6 +2,7 @@ package file
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -202,13 +203,13 @@ func handleGetFileTree(c *gin.Context, userRepository user.UserRepository) {
 	// ------------------------------
 
 	// git fetch
-	if code, _, errOut, err := utils.RunCommand("git", "-C", cleanRepoPath, "fetch"); err != nil || code != 0 {
+	if code, _, errOut, err := utils.RunCommand(fmt.Sprintf(`git -C %q fetch`, cleanRepoPath)); err != nil || code != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "git fetch failed", "details": errOut})
 		return
 	}
 
 	// Try a straight merge first
-	code, _, _, _ := utils.RunCommand("git", "-C", cleanRepoPath, "merge")
+	code, _, _, _ := utils.RunCommand(fmt.Sprintf(`git -C %q merge`, cleanRepoPath))
 	conflictedMap := map[string]bool{}
 
 	// Always decide based on actual merge state (MERGE_HEAD), not only exit code.
@@ -226,16 +227,16 @@ func handleGetFileTree(c *gin.Context, userRepository user.UserRepository) {
 
 		// 2) Stage those paths (if any)
 		for _, p := range paths {
-			utils.RunCommand("git", "-C", cleanRepoPath, "add", "--", p)
+			utils.RunCommand(fmt.Sprintf(`git -C %q add -- %q`, cleanRepoPath, p))
 		}
 
 		// 3) Marker commit (only if we added something)
 		if len(paths) > 0 {
-			utils.RunCommand("git", "-C", cleanRepoPath, "commit", "-m", "This commit is a merge conflict")
+			utils.RunCommand(fmt.Sprintf(`git -C %q commit -m %q`, cleanRepoPath, "This commit is a merge conflict"))
 		}
 
 		// 4) Attempt merge to trigger conflicts
-		utils.RunCommand("git", "-C", cleanRepoPath, "merge")
+		utils.RunCommand(fmt.Sprintf(`git -C %q merge`, cleanRepoPath))
 
 		// 5) If we are now in merge mode, collect conflicts
 		if isMidMerge(cleanRepoPath) {
@@ -418,7 +419,7 @@ func mapExtToCodeExtension(filename string) CodeExtension {
 
 // getGitDir returns the absolute path to the repo's git dir (handles worktrees)
 func getGitDir(repoPath string) (string, error) {
-	_, out, _, err := utils.RunCommand("git", "-C", repoPath, "rev-parse", "--git-dir")
+	_, out, _, err := utils.RunCommand(fmt.Sprintf(`git -C %q rev-parse --git-dir`, repoPath))
 	if err != nil {
 		return "", err
 	}
@@ -448,14 +449,14 @@ func isMidMerge(repoPath string) bool {
 
 // getChangedFiles returns newline-separated files for HEAD..FETCH_HEAD (string)
 func getChangedFiles(repoPath string) string {
-	_, out, _, _ := utils.RunCommand("git", "-C", repoPath, "diff", "--name-only", "HEAD..FETCH_HEAD")
+	_, out, _, _ := utils.RunCommand(fmt.Sprintf(`git -C %q diff --name-only HEAD..FETCH_HEAD`, repoPath))
 	return strings.TrimSpace(out)
 }
 
 // collectConflicts returns a set of conflicted file paths (relative to repo root)
 func collectConflicts(repoPath string) map[string]bool {
 	m := map[string]bool{}
-	_, out, _, _ := utils.RunCommand("git", "-C", repoPath, "diff", "--name-only", "--diff-filter=U")
+	_, out, _, _ := utils.RunCommand(fmt.Sprintf(`git -C %q diff --name-only --diff-filter=U`, repoPath))
 	for _, line := range splitNonEmptyLines(out) {
 		rel := filepath.ToSlash(strings.TrimSpace(line))
 		if rel != "" {
