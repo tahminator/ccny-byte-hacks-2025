@@ -22,16 +22,13 @@ export default function MergeConflictButton({
     setMergeContext("");
   };
 
-  if (!selectedFile?.isConflicted) {
-    return null;
-  }
-
   return (
     <div className="absolute top-4 right-4 z-50">
       <div className="relative">
         <Button
           className="bg-green-600 hover:bg-green-700 text-white"
           onClick={() => setShowConflictDropdown(!showConflictDropdown)}
+          disabled={!selectedFile?.isConflicted}
         >
           Resolve Conflicts
         </Button>
