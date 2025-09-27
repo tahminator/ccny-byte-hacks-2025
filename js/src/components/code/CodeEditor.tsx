@@ -1,6 +1,7 @@
 import { Editor } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 
+import { REPO_NAME, USER_NAME } from "@/app/Root.page";
 import FileTree from "@/components/code/tree/FileTree";
 import { useFileQuery } from "@/lib/api/queries/file";
 import { cn } from "@/lib/utils";
@@ -32,8 +33,8 @@ export default function CodeEditor({
     status,
   } = useFileQuery(
     // TODO: Replace with actual username and repo
-    githubUsername || "manofshad",
-    githubRepo || "NewsTrusty",
+    githubUsername || USER_NAME,
+    githubRepo || REPO_NAME,
     selectedFile?.fullPath,
   );
 

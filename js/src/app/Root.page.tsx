@@ -15,8 +15,11 @@ import {
 } from "@/lib/api/queries/github";
 import { useStream } from "@/lib/hooks/useStream";
 
+export const REPO_NAME = "NewsTrusty";
+export const USER_NAME = "manofshad";
+
 export default function RootPage() {
-  const { data, status } = useFileTreeQuery("NewsTrusty");
+  const { data, status } = useFileTreeQuery(REPO_NAME);
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
     undefined,
@@ -64,7 +67,7 @@ export default function RootPage() {
     acceptMergeMutation.mutate({
       newFileData: resolvedCodeContent,
       fullPath: selectedFile?.fullPath ?? "",
-      repoName: "NewsTrusty",
+      repoName: REPO_NAME,
     });
 
     setResolvedCode(""); // Clear the modal
@@ -118,7 +121,7 @@ export default function RootPage() {
                 }
                 commitMutation.mutate(
                   {
-                    repoName: "NewsTrusty",
+                    repoName: REPO_NAME,
                     newFileData: currentEditorContent,
                     path: selectedFile.fullPath,
                   },
