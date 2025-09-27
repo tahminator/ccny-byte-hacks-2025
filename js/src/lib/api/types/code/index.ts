@@ -1,0 +1,16 @@
+export type CodeExtension = "JS" | "TS" | "HTML" | "CSS";
+
+export type CodeFile = {
+  type: "FILE";
+  name: string;
+  fullPath: string;
+  extension: CodeExtension;
+  isConflicted: boolean;
+};
+
+export type CodeDirectory = {
+  type: "DIRECTORY";
+  name: string;
+  fullPath: string;
+  subDirectories?: (CodeDirectory | CodeFile)[];
+};
