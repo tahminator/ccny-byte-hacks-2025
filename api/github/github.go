@@ -3,11 +3,13 @@ package github
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	_ "regexp"
+	"strconv"
 	"strings"
 	_ "strings"
 	"time"
@@ -258,6 +260,89 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 			"shallow":        true,
 			"destination":    destPath,
 		})
+	})
+
+	r.POST("/commit", func(c *gin.Context) {
+		type Req struct {
+			RepoName string `json:"repoName"`
+		}
+
+		var body Req
+		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.RepoName) == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "repo name should not be empty"})
+			return
+		}
+		ao := c.MustGet("ao").(*utils.AuthenticationObject)
+
+		githubUsername := ao.User.GithubUsername
+		githubToken := ao.User.GithubToken
+		userId := ao.User.Id.String()
+
+		base := filepath.Join("repos", userId, *githubUsername, body.RepoName)
+
+		status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && [ -f \"$(git rev-parse --git-dir)/MERGE_HEAD\" ] && echo true || echo false", base))
+		if err != nil || stderr != "" || status != 0 {
+			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+			c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+		}
+
+		boolString := strings.ReplaceAll(stdout, "\n", "")
+
+		inMergeMode, err := strconv.ParseBool(boolString)
+		if err != nil {
+			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+			c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+			return
+		}
+
+		if inMergeMode {
+			status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && git diff --name-only --diff-filter=U", base))
+			if err != nil || stderr != "" || status != 0 {
+				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+				fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+				return
+			}
+
+			lines := strings.Split(stdout, "\n")
+
+			if len(lines) > 0 && lines[0] != "" {
+				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+				fmt.Println(fmt.Sprintf("len lines %d", len(lines)))
+				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+				return
+			}
+			url := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", *githubUsername, *githubToken, *githubUsername, body.RepoName)
+			fmt.Printf("heyyyy %s", url)
+			status, stdout, stderr, err = utils.RunCommand(fmt.Sprintf("cd %s && (git commit -m 'Test fix' || true) && git push %s", base, url))
+			fmt.Printf("heyyyy %s", stdout)
+			if status != 0 {
+				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+				fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+				return
+			}
+			c.JSON(http.StatusOK, utils.Success("ok", gin.H{}))
+			return
+		} else {
+			status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && git fetch && git merge", base))
+			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+			if status != 0 {
+				fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+				fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+				c.JSON(http.StatusInternalServerError, utils.Failure("failed to commit repository"))
+				return
+			}
+			url := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", *githubUsername, *githubToken, *githubUsername, body.RepoName)
+			status, stdout, stderr, err = utils.RunCommand(fmt.Sprintf("cd %s && git add . && (git commit -m 'Test msg' || true) && git push %s", base, url))
+			fmt.Println(fmt.Errorf("failed to commit repository %w", err))
+			fmt.Println(fmt.Sprintf("debug mode: %d %s %s %v", status, stdout, stderr, err))
+			c.JSON(http.StatusOK, utils.Success("ok", gin.H{}))
+			return
+		}
 	})
 
 	return r
