@@ -1,4 +1,4 @@
-export type CodeExtension = "JS" | "TS" | "HTML" | "CSS";
+export type CodeExtension = "JS" | "TS" | "HTML" | "CSS" | string;
 
 export type CodeFile = {
   type: "FILE";

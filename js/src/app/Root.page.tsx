@@ -2,50 +2,10 @@ import type { CodeDirectory, CodeFile } from "@/lib/api/types/code";
 
 import CodeEditor from "@/components/code/CodeEditor";
 
-const files: (CodeFile | CodeDirectory)[] = [
-  {
-    type: "FILE",
-    extension: "JS",
-    name: "hello.js",
-    fullPath: "hello.js",
-    isConflicted: false,
-  },
-  {
-    type: "DIRECTORY",
-    name: "hello",
-    fullPath: "hello",
-    subDirectories: [
-      {
-        type: "FILE",
-        extension: "JS",
-        name: "hello.js",
-        fullPath: "hello/hello.js",
-        isConflicted: true,
-      },
-      {
-        type: "FILE",
-        extension: "TS",
-        name: "hello.ts",
-        fullPath: "hello/hello.ts",
-        isConflicted: true,
-      },
-      {
-        type: "FILE",
-        extension: "HTML",
-        name: "hello.html",
-        fullPath: "hello/hello.html",
-        isConflicted: true,
-      },
-      {
-        type: "FILE",
-        extension: "CSS",
-        name: "hello.css",
-        fullPath: "hello/hello.css",
-        isConflicted: true,
-      },
-    ],
-  },
-];
+import testFiles from "./test.json";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const files: (CodeFile | CodeDirectory)[] = testFiles as unknown as any;
 
 export default function RootPage() {
   return (

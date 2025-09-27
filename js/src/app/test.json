@@ -1,0 +1,1178 @@
+[
+  {
+    "type": "DIRECTORY",
+    "name": "cleanup",
+    "fullPath": "cleanup",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "clean_nasdaq.py",
+        "fullPath": "cleanup/clean_nasdaq.py",
+        "extension": "PY",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
+    "name": "data",
+    "fullPath": "data",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "read_csv.py",
+        "fullPath": "data/read_csv.py",
+        "extension": "PY",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
+    "name": "static",
+    "fullPath": "static",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "styles.css",
+        "fullPath": "static/styles.css",
+        "extension": "CSS",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
+    "name": "stock_data",
+    "fullPath": "stock_data",
+    "subDirectories": [
+      {
+        "type": "DIRECTORY",
+        "name": "AAPL",
+        "fullPath": "stock_data/AAPL",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "AAPL_10year.csv",
+            "fullPath": "stock_data/AAPL/AAPL_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "AAPL_3year.csv",
+            "fullPath": "stock_data/AAPL/AAPL_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "ABBV",
+        "fullPath": "stock_data/ABBV",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "ABBV_10year.csv",
+            "fullPath": "stock_data/ABBV/ABBV_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "ABBV_3year.csv",
+            "fullPath": "stock_data/ABBV/ABBV_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "ABT",
+        "fullPath": "stock_data/ABT",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "ABT_10year.csv",
+            "fullPath": "stock_data/ABT/ABT_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "ABT_3year.csv",
+            "fullPath": "stock_data/ABT/ABT_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "ACN",
+        "fullPath": "stock_data/ACN",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "ACN_10year.csv",
+            "fullPath": "stock_data/ACN/ACN_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "ACN_3year.csv",
+            "fullPath": "stock_data/ACN/ACN_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "ADBE",
+        "fullPath": "stock_data/ADBE",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "ADBE_10year.csv",
+            "fullPath": "stock_data/ADBE/ADBE_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "ADBE_3year.csv",
+            "fullPath": "stock_data/ADBE/ADBE_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "AMZN",
+        "fullPath": "stock_data/AMZN",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "AMZN_10year.csv",
+            "fullPath": "stock_data/AMZN/AMZN_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "AMZN_3year.csv",
+            "fullPath": "stock_data/AMZN/AMZN_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "AVGO",
+        "fullPath": "stock_data/AVGO",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "AVGO_10year.csv",
+            "fullPath": "stock_data/AVGO/AVGO_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "AVGO_3year.csv",
+            "fullPath": "stock_data/AVGO/AVGO_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "BRK.B",
+        "fullPath": "stock_data/BRK.B",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "BRK.B_10year.csv",
+            "fullPath": "stock_data/BRK.B/BRK.B_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "BRK.B_3year.csv",
+            "fullPath": "stock_data/BRK.B/BRK.B_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "CMCSA",
+        "fullPath": "stock_data/CMCSA",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "CMCSA_10year.csv",
+            "fullPath": "stock_data/CMCSA/CMCSA_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "CMCSA_3year.csv",
+            "fullPath": "stock_data/CMCSA/CMCSA_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "COST",
+        "fullPath": "stock_data/COST",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "COST_10year.csv",
+            "fullPath": "stock_data/COST/COST_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "COST_3year.csv",
+            "fullPath": "stock_data/COST/COST_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "CSCO",
+        "fullPath": "stock_data/CSCO",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "CSCO_10year.csv",
+            "fullPath": "stock_data/CSCO/CSCO_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "CSCO_3year.csv",
+            "fullPath": "stock_data/CSCO/CSCO_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "CVX",
+        "fullPath": "stock_data/CVX",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "CVX_10year.csv",
+            "fullPath": "stock_data/CVX/CVX_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "CVX_3year.csv",
+            "fullPath": "stock_data/CVX/CVX_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "DHR",
+        "fullPath": "stock_data/DHR",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "DHR_10year.csv",
+            "fullPath": "stock_data/DHR/DHR_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "DHR_3year.csv",
+            "fullPath": "stock_data/DHR/DHR_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "DIS",
+        "fullPath": "stock_data/DIS",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "DIS_10year.csv",
+            "fullPath": "stock_data/DIS/DIS_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "DIS_3year.csv",
+            "fullPath": "stock_data/DIS/DIS_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "GOOG",
+        "fullPath": "stock_data/GOOG",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "GOOG_10year.csv",
+            "fullPath": "stock_data/GOOG/GOOG_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "GOOG_3year.csv",
+            "fullPath": "stock_data/GOOG/GOOG_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "GOOGL",
+        "fullPath": "stock_data/GOOGL",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "GOOGL_10year.csv",
+            "fullPath": "stock_data/GOOGL/GOOGL_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "GOOGL_3year.csv",
+            "fullPath": "stock_data/GOOGL/GOOGL_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "GS",
+        "fullPath": "stock_data/GS",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "GS_10year.csv",
+            "fullPath": "stock_data/GS/GS_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "GS_3year.csv",
+            "fullPath": "stock_data/GS/GS_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "HD",
+        "fullPath": "stock_data/HD",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "HD_10year.csv",
+            "fullPath": "stock_data/HD/HD_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "HD_3year.csv",
+            "fullPath": "stock_data/HD/HD_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "HON",
+        "fullPath": "stock_data/HON",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "HON_10year.csv",
+            "fullPath": "stock_data/HON/HON_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "HON_3year.csv",
+            "fullPath": "stock_data/HON/HON_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "INTC",
+        "fullPath": "stock_data/INTC",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "INTC_10year.csv",
+            "fullPath": "stock_data/INTC/INTC_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "INTC_3year.csv",
+            "fullPath": "stock_data/INTC/INTC_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "JNJ",
+        "fullPath": "stock_data/JNJ",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "JNJ_10year.csv",
+            "fullPath": "stock_data/JNJ/JNJ_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "JNJ_3year.csv",
+            "fullPath": "stock_data/JNJ/JNJ_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "JPM",
+        "fullPath": "stock_data/JPM",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "JPM_10year.csv",
+            "fullPath": "stock_data/JPM/JPM_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "JPM_3year.csv",
+            "fullPath": "stock_data/JPM/JPM_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "KO",
+        "fullPath": "stock_data/KO",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "KO_10year.csv",
+            "fullPath": "stock_data/KO/KO_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "KO_3year.csv",
+            "fullPath": "stock_data/KO/KO_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "LIN",
+        "fullPath": "stock_data/LIN",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "LIN_10year.csv",
+            "fullPath": "stock_data/LIN/LIN_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "LIN_3year.csv",
+            "fullPath": "stock_data/LIN/LIN_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "LLY",
+        "fullPath": "stock_data/LLY",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "LLY_10year.csv",
+            "fullPath": "stock_data/LLY/LLY_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "LLY_3year.csv",
+            "fullPath": "stock_data/LLY/LLY_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "LOW",
+        "fullPath": "stock_data/LOW",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "LOW_10year.csv",
+            "fullPath": "stock_data/LOW/LOW_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "LOW_3year.csv",
+            "fullPath": "stock_data/LOW/LOW_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "MA",
+        "fullPath": "stock_data/MA",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "MA_10year.csv",
+            "fullPath": "stock_data/MA/MA_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "MA_3year.csv",
+            "fullPath": "stock_data/MA/MA_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "MCD",
+        "fullPath": "stock_data/MCD",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "MCD_10year.csv",
+            "fullPath": "stock_data/MCD/MCD_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "MCD_3year.csv",
+            "fullPath": "stock_data/MCD/MCD_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "MDT",
+        "fullPath": "stock_data/MDT",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "MDT_10year.csv",
+            "fullPath": "stock_data/MDT/MDT_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "MDT_3year.csv",
+            "fullPath": "stock_data/MDT/MDT_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "META",
+        "fullPath": "stock_data/META",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "META_10year.csv",
+            "fullPath": "stock_data/META/META_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "META_3year.csv",
+            "fullPath": "stock_data/META/META_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "MRK",
+        "fullPath": "stock_data/MRK",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "MRK_10year.csv",
+            "fullPath": "stock_data/MRK/MRK_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "MRK_3year.csv",
+            "fullPath": "stock_data/MRK/MRK_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "MSFT",
+        "fullPath": "stock_data/MSFT",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "MSFT_10year.csv",
+            "fullPath": "stock_data/MSFT/MSFT_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "MSFT_3year.csv",
+            "fullPath": "stock_data/MSFT/MSFT_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "NEE",
+        "fullPath": "stock_data/NEE",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "NEE_10year.csv",
+            "fullPath": "stock_data/NEE/NEE_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "NEE_3year.csv",
+            "fullPath": "stock_data/NEE/NEE_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "NFLX",
+        "fullPath": "stock_data/NFLX",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "NFLX_10year.csv",
+            "fullPath": "stock_data/NFLX/NFLX_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "NFLX_3year.csv",
+            "fullPath": "stock_data/NFLX/NFLX_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "NKE",
+        "fullPath": "stock_data/NKE",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "NKE_10year.csv",
+            "fullPath": "stock_data/NKE/NKE_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "NKE_3year.csv",
+            "fullPath": "stock_data/NKE/NKE_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "NVDA",
+        "fullPath": "stock_data/NVDA",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "NVDA_10year.csv",
+            "fullPath": "stock_data/NVDA/NVDA_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "NVDA_3year.csv",
+            "fullPath": "stock_data/NVDA/NVDA_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "PEP",
+        "fullPath": "stock_data/PEP",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "PEP_10year.csv",
+            "fullPath": "stock_data/PEP/PEP_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "PEP_3year.csv",
+            "fullPath": "stock_data/PEP/PEP_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "PFE",
+        "fullPath": "stock_data/PFE",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "PFE_10year.csv",
+            "fullPath": "stock_data/PFE/PFE_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "PFE_3year.csv",
+            "fullPath": "stock_data/PFE/PFE_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "PG",
+        "fullPath": "stock_data/PG",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "PG_10year.csv",
+            "fullPath": "stock_data/PG/PG_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "PG_3year.csv",
+            "fullPath": "stock_data/PG/PG_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "PM",
+        "fullPath": "stock_data/PM",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "PM_10year.csv",
+            "fullPath": "stock_data/PM/PM_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "PM_3year.csv",
+            "fullPath": "stock_data/PM/PM_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "QCOM",
+        "fullPath": "stock_data/QCOM",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "QCOM_10year.csv",
+            "fullPath": "stock_data/QCOM/QCOM_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "QCOM_3year.csv",
+            "fullPath": "stock_data/QCOM/QCOM_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "TMO",
+        "fullPath": "stock_data/TMO",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "TMO_10year.csv",
+            "fullPath": "stock_data/TMO/TMO_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "TMO_3year.csv",
+            "fullPath": "stock_data/TMO/TMO_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "TSLA",
+        "fullPath": "stock_data/TSLA",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "TSLA_10year.csv",
+            "fullPath": "stock_data/TSLA/TSLA_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "TSLA_3year.csv",
+            "fullPath": "stock_data/TSLA/TSLA_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "TXN",
+        "fullPath": "stock_data/TXN",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "TXN_10year.csv",
+            "fullPath": "stock_data/TXN/TXN_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "TXN_3year.csv",
+            "fullPath": "stock_data/TXN/TXN_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "UNH",
+        "fullPath": "stock_data/UNH",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "UNH_10year.csv",
+            "fullPath": "stock_data/UNH/UNH_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "UNH_3year.csv",
+            "fullPath": "stock_data/UNH/UNH_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "UNP",
+        "fullPath": "stock_data/UNP",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "UNP_10year.csv",
+            "fullPath": "stock_data/UNP/UNP_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "UNP_3year.csv",
+            "fullPath": "stock_data/UNP/UNP_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "V",
+        "fullPath": "stock_data/V",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "V_10year.csv",
+            "fullPath": "stock_data/V/V_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "V_3year.csv",
+            "fullPath": "stock_data/V/V_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "VZ",
+        "fullPath": "stock_data/VZ",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "VZ_10year.csv",
+            "fullPath": "stock_data/VZ/VZ_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "VZ_3year.csv",
+            "fullPath": "stock_data/VZ/VZ_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "WMT",
+        "fullPath": "stock_data/WMT",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "WMT_10year.csv",
+            "fullPath": "stock_data/WMT/WMT_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "WMT_3year.csv",
+            "fullPath": "stock_data/WMT/WMT_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "DIRECTORY",
+        "name": "XOM",
+        "fullPath": "stock_data/XOM",
+        "subDirectories": [
+          {
+            "type": "FILE",
+            "name": "XOM_10year.csv",
+            "fullPath": "stock_data/XOM/XOM_10year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          },
+          {
+            "type": "FILE",
+            "name": "XOM_3year.csv",
+            "fullPath": "stock_data/XOM/XOM_3year.csv",
+            "extension": "CSV",
+            "isConflicted": false
+          }
+        ]
+      },
+      {
+        "type": "FILE",
+        "name": "create_files.py",
+        "fullPath": "stock_data/create_files.py",
+        "extension": "PY",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "current_price.py",
+        "fullPath": "stock_data/current_price.py",
+        "extension": "PY",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "nasdaq.py",
+        "fullPath": "stock_data/nasdaq.py",
+        "extension": "PY",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
+    "name": "strategies",
+    "fullPath": "strategies",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "buy_on_first_day.py",
+        "fullPath": "strategies/buy_on_first_day.py",
+        "extension": "PY",
+        "isConflicted": false
+      },
+      {
+        "type": "FILE",
+        "name": "uptrend.py",
+        "fullPath": "strategies/uptrend.py",
+        "extension": "PY",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "DIRECTORY",
+    "name": "templates",
+    "fullPath": "templates",
+    "subDirectories": [
+      {
+        "type": "FILE",
+        "name": "home.html",
+        "fullPath": "templates/home.html",
+        "extension": "HTML",
+        "isConflicted": false
+      }
+    ]
+  },
+  {
+    "type": "FILE",
+    "name": ".gitignore",
+    "fullPath": ".gitignore",
+    "extension": "GITIGNORE",
+    "isConflicted": false
+  },
+  {
+    "type": "FILE",
+    "name": "app.py",
+    "fullPath": "app.py",
+    "extension": "PY",
+    "isConflicted": false
+  },
+  {
+    "type": "FILE",
+    "name": "README.md",
+    "fullPath": "README.md",
+    "extension": "MD",
+    "isConflicted": false
+  }
+]
