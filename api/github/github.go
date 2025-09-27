@@ -263,12 +263,14 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 
 	r.POST("/commit", func(c *gin.Context) {
 		type Req struct {
-			RepoName string `json:"repoName"`
+			RepoName    string `json:"repoName"`
+			NewFileData string `json:"newFileData"`
+			Path        string `json:"path"`
 		}
 
 		var body Req
-		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.RepoName) == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "repo name should not be empty"})
+		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.RepoName) == "" || strings.TrimSpace(body.newFileData) == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "repo name and/or new file data should not be empty"})
 			return
 		}
 		ao := c.MustGet("ao").(*utils.AuthenticationObject)
@@ -278,6 +280,20 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		userId := ao.User.Id.String()
 
 		base := filepath.Join("repos", userId, *githubUsername, body.RepoName)
+		path := body.Path
+
+		if len(path) > 0 && path[0] == '/' {
+			path = path[1:]
+		}
+
+		fullPath := filepath.Join(base, path)
+		permissions := os.FileMode(0o644)
+
+		err := os.WriteFile(fullPath, []byte(body.NewFileData), permissions)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
+			return
+		}
 
 		status, stdout, stderr, err := utils.RunCommand(fmt.Sprintf("cd %s && [ -f \"$(git rev-parse --git-dir)/MERGE_HEAD\" ] && echo true || echo false", base))
 		if err != nil || stderr != "" || status != 0 {

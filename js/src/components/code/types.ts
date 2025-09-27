@@ -9,4 +9,5 @@ export type CodeEditorProps = {
   githubUsername?: string;
   githubRepo?: string;
   onFileSelected?: (file: CodeFile) => void;
+  onChange?: (value: string | undefined, file: CodeFile | undefined) => void;
 };
