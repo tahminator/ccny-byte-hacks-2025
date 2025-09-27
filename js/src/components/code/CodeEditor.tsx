@@ -17,13 +17,17 @@ export default function CodeEditor({
       return "// Select a file from the tree to view its content\n// Or click 'Resolve Conflicts' to start resolving merge conflicts";
     }
 
-    // For now, return a placeholder content for the selected file
-    // In a real implementation, you'd fetch the actual file content
+    // If the file has code content, display it
+    if (selectedFile.code) {
+      return selectedFile.code;
+    }
+
+    // Fallback to placeholder content if no code is available
     return `// File: ${selectedFile.name}\n// Path: ${
       selectedFile.fullPath
     }\n// Type: ${
       selectedFile.extension
-    }\n\n// This is where the file content would be displayed\n// In a real implementation, you would:\n// 1. Fetch the actual file content from the backend\n// 2. Display it here\n// 3. Allow editing if needed\n\n${
+    }\n\n// No code content available for this file\n// In a real implementation, you would:\n// 1. Fetch the actual file content from the backend\n// 2. Display it here\n// 3. Allow editing if needed\n\n${
       selectedFile.isConflicted
         ? "// ⚠️ This file has merge conflicts!"
         : "// ✅ No conflicts in this file"

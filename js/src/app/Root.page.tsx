@@ -56,6 +56,7 @@ export default function RootPage() {
         <CodeEditor
           className="max-w-full"
           files={files}
+          selectedFile={selectedFile}
           title={"My Project"}
           onFileSelected={handleFileSelected}
         />
