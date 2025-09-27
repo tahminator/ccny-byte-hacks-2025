@@ -6,5 +6,7 @@ export type CodeEditorProps = {
   code?: string;
   title?: string;
   className?: string;
+  githubUsername?: string;
+  githubRepo?: string;
   onFileSelected?: (file: CodeFile) => void;
 };

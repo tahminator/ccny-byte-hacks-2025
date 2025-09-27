@@ -1,6 +1,7 @@
 import { Editor } from "@monaco-editor/react";
 
 import FileTree from "@/components/code/tree/FileTree";
+import { useFileQuery } from "@/lib/api/queries/file";
 import { cn } from "@/lib/utils";
 
 import type { CodeEditorProps } from "./types";
@@ -10,28 +11,40 @@ export default function CodeEditor({
   selectedFile,
   className,
   title,
+  githubUsername,
+  githubRepo,
   onFileSelected,
 }: CodeEditorProps) {
+  // Use the useFileQuery hook to fetch file content
+  const {
+    data: fileContent,
+    isLoading,
+    error,
+  } = useFileQuery(
+    // TODO: Replace with actual username and repo
+    githubUsername || "manofshad",
+    githubRepo || "NewsTrusty",
+    selectedFile?.fullPath || ""
+  );
+
   const getFileContent = () => {
     if (!selectedFile) {
       return "// Select a file from the tree to view its content\n// Or click 'Resolve Conflicts' to start resolving merge conflicts";
     }
 
-    // If the file has code content, display it
-    if (selectedFile.code) {
-      return selectedFile.code;
+    if (isLoading) {
+      return "// Loading file content...";
     }
 
-    // Fallback to placeholder content if no code is available
-    return `// File: ${selectedFile.name}\n// Path: ${
-      selectedFile.fullPath
-    }\n// Type: ${
-      selectedFile.extension
-    }\n\n// No code content available for this file\n// In a real implementation, you would:\n// 1. Fetch the actual file content from the backend\n// 2. Display it here\n// 3. Allow editing if needed\n\n${
-      selectedFile.isConflicted
-        ? "// ⚠️ This file has merge conflicts!"
-        : "// ✅ No conflicts in this file"
-    }`;
+    if (error) {
+      return `// Error loading file: ${error.message}\n// File: ${selectedFile.name}\n// Path: ${selectedFile.fullPath}`;
+    }
+
+    if (!fileContent) {
+      return `// No content available for this file\n// File: ${selectedFile.name}\n// Path: ${selectedFile.fullPath}`;
+    }
+
+    return fileContent;
   };
 
   return (

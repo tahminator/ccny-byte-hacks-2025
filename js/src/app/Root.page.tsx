@@ -37,7 +37,7 @@ export default function RootPage() {
     setCodeString("");
 
     await startStream({
-      conflictContent: selectedFile?.code || "",
+      conflictContent: "",
       filePath: selectedFile?.fullPath || "",
       userQuery: context || "Please help resolve this merge conflict",
     });

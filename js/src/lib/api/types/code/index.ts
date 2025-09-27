@@ -22,7 +22,6 @@ export type CodeFile = {
   fullPath: string;
   extension: CodeExtension;
   isConflicted: boolean;
-  code?: string;
 };
 
 export type CodeDirectory = {
