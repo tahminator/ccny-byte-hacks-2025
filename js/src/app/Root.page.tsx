@@ -16,9 +16,10 @@ export default function RootPage() {
   const { data, status } = useFileTreeQuery("NewsTrusty");
   const [codeString, setCodeString] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<CodeFile | undefined>(
-    undefined,
+    undefined
   );
   const [resolvedCode, setResolvedCode] = useState<string>("");
+  const [currentEditorContent, setCurrentEditorContent] = useState<string>("");
 
   const commitMutation = useCommitRepositoryMutation({
     onSuccess: () => {
@@ -58,7 +59,7 @@ export default function RootPage() {
 
   const handleAcceptResolvedCode = async (
     filePath: string,
-    resolvedCodeContent: string,
+    resolvedCodeContent: string
   ) => {
     console.log("Accepting resolved code for:", filePath);
     console.log("Resolved code:", resolvedCodeContent);
@@ -80,10 +81,10 @@ export default function RootPage() {
 
   const handleEditorChange = (
     value: string | undefined,
-    file: CodeFile | undefined,
+    file: CodeFile | undefined
   ) => {
     console.log("Editor content changed:", { value, file: file?.name });
-    // You can add additional logic here to track changes
+    setCurrentEditorContent(value || "");
   };
 
   if (status === "pending") {
@@ -102,9 +103,23 @@ export default function RootPage() {
         <div className="absolute top-4 right-42 z-50">
           <div className="relative">
             <Button
-              onClick={() => commitMutation.mutate({ repoName: "NewsTrusty" })}
+              onClick={() => {
+                if (!selectedFile) {
+                  toast.error("Please select a file first");
+                  return;
+                }
+                if (!currentEditorContent.trim()) {
+                  toast.error("File content is empty");
+                  return;
+                }
+                commitMutation.mutate({
+                  repoName: "NewsTrusty",
+                  newFileData: currentEditorContent,
+                  path: selectedFile.fullPath,
+                });
+              }}
             >
-              Show Toast
+              Commit Changes
             </Button>
           </div>
         </div>

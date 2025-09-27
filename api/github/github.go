@@ -269,7 +269,7 @@ func NewRouter(eng *gin.RouterGroup, userRepository user.UserRepository, session
 		}
 
 		var body Req
-		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.RepoName) == "" || strings.TrimSpace(body.newFileData) == "" {
+		if err := c.ShouldBindJSON(&body); err != nil || strings.TrimSpace(body.RepoName) == "" || strings.TrimSpace(body.NewFileData) == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "repo name and/or new file data should not be empty"})
 			return
 		}

@@ -1,10 +1,14 @@
-export async function commitRepository(repoName: string) {
+export async function commitRepository(
+  repoName: string,
+  newFileData: string,
+  path: string
+) {
   const res = await fetch("/api/github/commit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ repoName }),
+    body: JSON.stringify({ repoName, newFileData, path }),
   });
 
   if (!res.ok) {
