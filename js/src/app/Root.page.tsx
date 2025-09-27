@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 import type { CodeFile } from "@/lib/api/types/code";
@@ -79,13 +79,10 @@ export default function RootPage() {
     setCodeString(""); // Clear the diff editor
   };
 
-  const handleEditorChange = (
-    value: string | undefined,
-    file: CodeFile | undefined,
-  ) => {
-    console.log("Editor content changed:", { value, file: file?.name });
+  const handleEditorChange = useCallback((value: string | undefined) => {
+    // console.log("Editor content changed:", { value, file: file?.name });
     setCurrentEditorContent(value || "");
-  };
+  }, []);
 
   if (status === "pending") {
     return <>Please put a loader here...</>;

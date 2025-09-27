@@ -37,11 +37,11 @@ export default function CodeEditor({
     selectedFile?.fullPath,
   );
 
-  // useEffect(() => {
-  //   if (status === "success") {
-  //     onChange?.(fileContent);
-  //   }
-  // }, [fileContent, onChange, status]);
+  useEffect(() => {
+    if (status === "success") {
+      onChange?.(fileContent);
+    }
+  }, [fileContent, onChange, status]);
 
   const getFileContent = () => {
     if (!selectedFile) {
