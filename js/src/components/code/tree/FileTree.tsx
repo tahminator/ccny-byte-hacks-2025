@@ -2,7 +2,6 @@ import { useMemo } from "react";
 
 import type { CodeDirectory, CodeFile } from "@/lib/api/types/code";
 
-import { ModeToggle } from "@/components/modeToggle";
 import { Badge } from "@/components/ui/badge";
 
 import type { FileTreeProps } from "./types";
@@ -41,7 +40,6 @@ export default function FileTree({
       <div className="p-3 border-b border-border">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-semibold">{title}</h2>
-          <ModeToggle />
         </div>
         {conflictCount > 0 && (
           <div className="flex justify-center">

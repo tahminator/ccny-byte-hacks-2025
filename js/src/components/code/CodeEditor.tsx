@@ -1,12 +1,11 @@
 import { Editor } from "@monaco-editor/react";
+import { useEffect, useState } from "react";
 
 import FileTree from "@/components/code/tree/FileTree";
 import { useFileQuery } from "@/lib/api/queries/file";
-import { useTheme } from "@/lib/themeProvider";
 import { cn } from "@/lib/utils";
 
 import type { CodeEditorProps } from "./types";
-import { useEffect, useState } from "react";
 
 export default function CodeEditor({
   files,
@@ -18,7 +17,6 @@ export default function CodeEditor({
   onFileSelected,
   onChange,
 }: CodeEditorProps) {
-  const { theme } = useTheme();
   const [monacoTheme, setMonacoTheme] = useState("");
 
   useEffect(() => {
