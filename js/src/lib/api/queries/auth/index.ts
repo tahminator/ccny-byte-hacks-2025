@@ -14,4 +14,5 @@ export const useFileTreeQuery = (repoName: string) =>
   useQuery({
     queryKey: ["tree"],
     queryFn: () => getFileTree(repoName),
+      refetchOnWindowFocus: false,
   });

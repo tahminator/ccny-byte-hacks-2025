@@ -5,8 +5,18 @@ import { REPO_NAME, USER_NAME } from "@/app/Root.page";
 import FileTree from "@/components/code/tree/FileTree";
 import { useFileQuery } from "@/lib/api/queries/file";
 import { cn } from "@/lib/utils";
+import { createHighlighter } from "shiki"
 
 import type { CodeEditorProps } from "./types";
+
+const hl = await createHighlighter({
+  themes: [
+      "github-dark",
+  ],
+  langs: [
+      "python"
+  ]
+})
 
 export default function CodeEditor({
   files,
@@ -88,7 +98,7 @@ export default function CodeEditor({
           className="h-full"
           value={getFileContent()}
           key={selectedFile?.fullPath || "default"}
-          language={selectedFile?.extension?.toLowerCase() || "plaintext"}
+          language={"python"}
           onChange={handleEditorChange}
           theme={monacoTheme}
           options={{

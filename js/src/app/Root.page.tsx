@@ -15,7 +15,7 @@ import {
 } from "@/lib/api/queries/github";
 import { useStream } from "@/lib/hooks/useStream";
 
-export const REPO_NAME = "NewsTrusty";
+export const REPO_NAME = "PricingPythonDemo";
 export const USER_NAME = "manofshad";
 
 export default function RootPage() {

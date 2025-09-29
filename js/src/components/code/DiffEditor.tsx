@@ -11,6 +11,7 @@ export default function DiffEditor({ code }: DiffEditorProps) {
     <Editor
       className={cn("h-full", code ? "h-full max-w-full" : "hidden")}
       value={code}
+      defaultLanguage={"python"}
       options={{
         readOnly: false,
         minimap: { enabled: false },

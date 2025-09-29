@@ -11,3 +11,6 @@ go-dev *args:
 
 js-dev *args:
     cd js && pnpm run dev {{args}}
+
+dev:
+    npm i -g concurrently && concurrently "just go-dev" "just js-dev"
