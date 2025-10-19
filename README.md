@@ -2,15 +2,10 @@
 
 <img width="945" height="444" alt="Screenshot 2025-09-27 at 12 51 03 PM" src="https://github.com/user-attachments/assets/c163d621-dadd-4b0a-9aa3-c4eb1c43d083" />
 
-
-
 VIDEO 
 
-<video controls width="600">
-  <source src="https://github.com/user-attachments/assets/ecd882af-188e-4283-abc0-4bffc7dd0ce0" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
+<p><strong>Video:</strong></p>
+<video src="https://github.com/user-attachments/assets/e3be0456-e10d-422e-bfba-4b4f6fcb6eb9" controls width="600"></video>
 
 
 Your IDE for dealing with the one thing vibe coders HATE… MERGE CONFLICTS! 
