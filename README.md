@@ -2,9 +2,8 @@
 
 <img width="945" height="444" alt="Screenshot 2025-09-27 at 12 51 03 PM" src="https://github.com/user-attachments/assets/c163d621-dadd-4b0a-9aa3-c4eb1c43d083" />
 
-Video 
-
-<video src="https://github.com/user-attachments/assets/ecd882af-188e-4283-abc0-4bffc7dd0ce0" controls></video>
+<p><strong>Video:</strong></p>
+<video src="https://github.com/user-attachments/assets/ecd882af-188e-4283-abc0-4bffc7dd0ce0" controls width="600"></video>
 
 
 
