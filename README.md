@@ -2,6 +2,10 @@
 
 <img width="945" height="444" alt="Screenshot 2025-09-27 at 12 51 03 PM" src="https://github.com/user-attachments/assets/c163d621-dadd-4b0a-9aa3-c4eb1c43d083" />
 
+Video 
+https://github.com/user-attachments/assets/904f0216-5de4-4550-bc65-48afe3411afe
+
+
 
 Your IDE for dealing with the one thing vibe coders HATE… MERGE CONFLICTS! 
 
