@@ -53,6 +53,13 @@ go run main.go or just go-dev
 front end:
 
 pnpm run dev
+<img width="743" height="570" alt="Screenshot 2025-11-13 at 2 23 22 PM" src="https://github.com/user-attachments/assets/d7cb3317-ecc9-4b87-8486-4777c91286a4" />
+<img width="819" height="457" alt="Screensho<img width="820" height="471" alt="Screenshot 2025-11-13 at 2 23 14 PM" src="https://github.com/user-attachments/assets/ea6c8f55-c2c4-4351-bf2e-e0010ac27297" />
+t 2025-11-13 at 2 23 19 PM" src="https://github.com/user-attachments/assets/d1b9478f-72d7-4cad-a1c0-c9e06411ff7f" />
+
+<img width="784" height="454" alt="Screenshot 2025-11-13 at 2 23 09 PM" src="https://github.com/user-attachments/assets/cac0e22d-6ff3-43a8-afbd-30f12e4b48f4" />
+
+
 
 download for gemini
 go get google.golang.org/genai
